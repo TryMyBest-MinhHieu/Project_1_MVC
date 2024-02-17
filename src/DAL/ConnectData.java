@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public class ConnectData {
     private Connection conn;
     
-    public boolean openConnection(){
+    public boolean OpenConnection(){
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
             String dbUrl = "jdbc:mysql://localhost:3306/school";
@@ -25,7 +25,11 @@ public class ConnectData {
             }
     }
     
-    public void closeConnection(){
+    public Connection GetConnection(){
+        return conn;
+    }
+    
+    public void CloseConnection(){
         try{
             if(conn != null)
                 conn.close();
