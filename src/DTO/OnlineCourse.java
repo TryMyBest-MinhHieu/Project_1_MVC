@@ -16,6 +16,13 @@ public class OnlineCourse {
     public OnlineCourse() {
     }
 
+    public int getCourseID() {
+        return courseID;
+    }
+
+    public String getUrl() {
+        return url;
+    }
     public void setCourseID(int CourseID) {
         this.courseID = CourseID;
     }

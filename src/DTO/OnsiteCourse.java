@@ -10,12 +10,12 @@ public class OnsiteCourse {
     private int courseID;
     private String location;
     private String days;
-    private Date time;
+    private String time;
     
-        public OnsiteCourse() {
+    public OnsiteCourse() {
     }
 
-    public OnsiteCourse(int courseID, String location, String days, Date time) {
+    public OnsiteCourse(int courseID, String location, String days, String time) {
         this.courseID = courseID;
         this.location = location;
         this.days = days;
@@ -38,19 +38,19 @@ public class OnsiteCourse {
         this.location = location;
     }
 
-    public String getDays() {
+    public String getDay() {
         return days;
     }
 
-    public void setDays(String days) {
+    public void setDay(String days) {
         this.days = days;
     }
 
-    public Date getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(String time) {
         this.time = time;
     }
 }

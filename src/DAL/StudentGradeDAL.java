@@ -11,95 +11,188 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 // Thêm, sửa, xóa
-public class StudentGradeDAL {
-    ConnectData cd = new ConnectData();
-    Connection conn = cd.GetConnection();
+public class StudentGradeDAL extends ConnectData{
+//    ConnectData cd = new ConnectData();
+//    Connection conn = cd.GetConnection();
     
-    //int EnrollmentID, int CourseID, int StudentID, BigDecimal Grade
-    public ArrayList<StudentGrade> GetAllListStudentGrade(){
-        ArrayList<StudentGrade> studentGradesList = new ArrayList<StudentGrade>();
-        String sql = "SELECT * FROM studentgrade";
-        if (cd.OpenConnection()) {
+    public ArrayList<StudentGrade> getAllStudentGrade(){
+        ArrayList<StudentGrade> list = new ArrayList<>();
+        if(OpenConnection()){
             try {
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql);
+                String sql = "select *from StudentGrade";
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(sql);
                 while(rs.next()){
                     StudentGrade sg = new StudentGrade();
                     sg.setEnrollmentID(rs.getInt("EnrollmentID"));
                     sg.setCourseID(rs.getInt("CourseID"));
                     sg.setStudentID(rs.getInt("StudentID"));
-                    sg.setGrade(rs.getBigDecimal("Grade"));
-                    studentGradesList.add(sg);   
+                    sg.setGrade(rs.getDouble("Grade"));
+                    list.add(sg);
+                }
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally{
+                CloseConnection();
+            }
+        }
+        
+        return list;
+    }
+    
+    public boolean checkStudentGradeID(int enrollmentID){
+        boolean check = false;
+        if(OpenConnection()){
+            try {
+                String sql = "select * from StudentGrade where EnrollmentID = "+enrollmentID;
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(sql);
+                while(rs.next()){
+                    check = true;
                 }
             } catch (SQLException ex) {
-                System.out.println("khong tim thay danh sach" + ex);
-            }finally{ cd.CloseConnection();}
-        } else {
-            System.out.println("Kết nối không thành công.");
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally{
+                CloseConnection();
+            }
+            
         }
-        return studentGradesList;
+        
+        return check;
     }
     
-
-    public boolean AddStudentGrade(StudentGrade sg){
-        boolean result = false;
-        String sql = "INSERT INTO studentgrade VALUES(?,?,?,?)";
-        if(cd.OpenConnection()){
+    public ArrayList<Integer> getAllStudentID(){
+        ArrayList<Integer> list = new ArrayList<>();
+        if(OpenConnection()){
             try {
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                stmt.setInt(1, sg.getEnrollmentID());
-                stmt.setInt(2, sg.getCourseID());
-                stmt.setInt(3, sg.getStudentID());
-                stmt.setBigDecimal(4, sg.getGrade());
-                if(stmt.executeUpdate() >= 1)
-                    result = true;
+                String sql = "select PersonID from Person where PersonID is not NULL";
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(sql);
+                while(rs.next()){
+                    list.add(Integer.valueOf(rs.getInt("PersonID")));
+                }
             } catch (SQLException ex) {
-                System.out.println("Them that bai" + ex);
-            }finally{ cd.CloseConnection();}
-        }else {
-            System.out.println("Kết nối không thành công.");
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            }finally{
+                CloseConnection();
+            }
         }
-        return result;
+        
+        return list;
     }
     
-    public boolean UpdateStudentGrade(StudentGrade sg){
-        boolean result = false;
-        String sql = "UPDATE studentgrade SET CourseID = ?, StudentID = ?, Grade = ? WHERE EnrollmentID = ?";
-        if(cd.OpenConnection()){
+    public ArrayList<Integer> getAllCourseID(){
+        ArrayList<Integer> list = new ArrayList<>();
+        if(OpenConnection()){
             try {
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                stmt.setInt(1,sg.getEnrollmentID());
-                stmt.setInt(2, sg.getCourseID());
-                stmt.setInt(3, sg.getStudentID());
-                stmt.setBigDecimal(4, sg.getGrade());
-                if(stmt.executeUpdate() >= 1)
-                    result = true;
+                String sql = "select CourseID from Course";
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(sql);
+                while(rs.next()){
+                    list.add(Integer.valueOf(rs.getInt("CourseID")));
+                }
             } catch (SQLException ex) {
-                System.out.println("Cap nhat that bai" + ex);
-            }finally{ cd.CloseConnection();}
-        }else {
-            System.out.println("Kết nối không thành công.");
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally{
+                CloseConnection();
+            }
         }
-        return result;
+        return list;
     }
     
-    public boolean DeleteStudentGrade(int sgID){
-        boolean result = false;
-        String sql = "DELETE FROM studentgrade WHERE EnrollmentID = ?";
-        if(cd.OpenConnection()){
+    public boolean addStudentGrade(StudentGrade sg){
+        boolean check = false;
+        if(OpenConnection()){
             try {
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                stmt.setInt(1, sgID);
-                if(stmt.executeUpdate() >= 1)
-                     result = true;
+                String sql = "insert into StudentGrade values(?,?,?)";
+                PreparedStatement stm = conn.prepareStatement(sql);
+                stm.setInt(1, sg.getCourseID());
+                stm.setInt(2, sg.getStudentID());
+                stm.setDouble(3, sg.getGrade());
+                if(stm.executeUpdate()>=1){
+                    check = true;
+                }
             } catch (SQLException ex) {
-                System.out.println("Xoa that bai" + ex);
-            }finally{ cd.CloseConnection();}
-        }else {
-            System.out.println("Kết nối không thành công.");
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            }finally{
+                CloseConnection();
+            }
+            
         }
-        return result;
+        return check;
+    }
+    
+    public boolean deleteStudentGrade(int enrollmentID){
+        boolean check = false;
+        if(OpenConnection()){
+            try {
+                String sql = "delete from StudentGrade where EnrollmentID = ?";
+                PreparedStatement stm = conn.prepareStatement(sql);
+                stm.setInt(1, enrollmentID);
+                if(stm.executeUpdate()>=1){
+                    check = true;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            }finally{
+                CloseConnection();
+            }
+            
+        }
+        
+        return check;
+    }
+    
+    public boolean updateStudentGrade(StudentGrade sg){
+        boolean check = false;
+        if(OpenConnection()){
+            try {
+                String sql = "update StudentGrade set CourseID = ?, PersonID = ?, Grade = ? where EnrollmentID = ?";
+                PreparedStatement stm = conn.prepareStatement(sql);
+                stm.setInt(1, sg.getCourseID());
+                stm.setInt(2, sg.getStudentID());
+                stm.setDouble(3, sg.getGrade());
+                stm.setInt(4, sg.getEnrollmentID());
+                if(stm.executeUpdate()>=1){
+                    check = true;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            }finally{
+                CloseConnection();
+            }
+        }
+        
+        return check;
+    }
+    
+    public ArrayList<StudentGrade> searchStudentGrade(String column, String data){
+        ArrayList<StudentGrade> list = new ArrayList<>();
+        if(OpenConnection()){
+            try {
+                String sql = "select * from StudentGrade where "+column+" = "+data;
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(sql);
+                while(rs.next()){
+                    StudentGrade sg = new StudentGrade();
+                    sg.setEnrollmentID(rs.getInt("EnrollmentID"));
+                    sg.setCourseID(rs.getInt("CourseID"));
+                    sg.setStudentID(rs.getInt("StudentID"));
+                    sg.setGrade(rs.getDouble("Grade"));
+                    list.add(sg);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            }finally{
+                CloseConnection();
+            }
+        }
+        
+        return list;
     }
 }

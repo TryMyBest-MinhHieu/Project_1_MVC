@@ -9,7 +9,7 @@ import java.sql.SQLException;
  */
 
 public class ConnectData {
-    private Connection conn;
+    public Connection conn;
     
     public boolean OpenConnection(){
         try{
