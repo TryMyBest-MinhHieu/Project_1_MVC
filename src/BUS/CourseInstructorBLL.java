@@ -6,6 +6,7 @@ package BUS;
 
 import DAL.CourseInstructorDAL;
 import DTO.CourseInstructor;
+import DTO.CourseInstructorInfo;
 import java.util.ArrayList;
 
 
@@ -42,5 +43,9 @@ public class CourseInstructorBLL {
     
     public ArrayList<CourseInstructor> searchCourseInstructor(String column, String data){
         return ciDAL.searchCourseInstructor(column, data);
+    }
+    
+    public ArrayList<CourseInstructorInfo> getCIInfo(CourseInstructor ci){
+        return ciDAL.getCIInfo(ci);
     }
 }

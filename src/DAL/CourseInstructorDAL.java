@@ -5,6 +5,7 @@
 package DAL;
 
 import DTO.CourseInstructor;
+import DTO.CourseInstructorInfo;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -80,6 +81,41 @@ public class CourseInstructorDAL extends ConnectData{
         return list;
     }
     
+    public ArrayList<CourseInstructorInfo> getCIInfo(CourseInstructor c) {
+        ArrayList<CourseInstructorInfo> ciiList = new ArrayList<>();
+
+        if (OpenConnection()) {
+            try {
+                String sql = "SELECT c.Title, CONCAT(p.Firstname, ' ', p.Lastname) AS Fullname "
+                        + "FROM courseinstructor ci JOIN course c ON ci.CourseID = c.CourseID "
+                        + "JOIN person p ON ci.PersonID = p.PersonID "
+                        + "WHERE ci.courseid = ? AND ci.personid = ?";
+
+                // Sử dụng PreparedStatement để tránh SQL Injection
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, c.getCourseID());
+                preparedStatement.setInt(2, c.getPersonID());
+
+                ResultSet rs = preparedStatement.executeQuery();
+
+                while (rs.next()) {
+                    CourseInstructorInfo cii = new CourseInstructorInfo();
+                    cii.setTitle(rs.getString("Title"));
+                    cii.setFullname(rs.getString("Fullname"));
+                    ciiList.add(cii);
+                }
+                rs.close();
+                preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace(); // Xử lý lỗi theo nhu cầu của bạn
+            } finally {
+                CloseConnection();
+            }
+        }
+
+        return ciiList;
+    }
+    
     public ArrayList<Integer> getAllPersonID(){
         ArrayList<Integer> list = new ArrayList<>();
         if(OpenConnection()){
@@ -96,8 +132,6 @@ public class CourseInstructorDAL extends ConnectData{
                 CloseConnection();
             }
         }
-        
-        
         return list;
     }
     

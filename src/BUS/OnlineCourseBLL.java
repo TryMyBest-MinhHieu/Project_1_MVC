@@ -5,6 +5,7 @@
 package BUS;
 
 import DAL.OnlineCourseDAL;
+import DTO.CourseInfo;
 import DTO.OnlineCourse;
 import java.util.ArrayList;
 
@@ -14,10 +15,6 @@ public class OnlineCourseBLL {
     
     public ArrayList<OnlineCourse> getAllOnlineCourse(){
         return ocDAL.getAllOnlineCourse();
-    }
-    
-    public ArrayList<Integer> getAllCourseID(){
-        return ocDAL.getAllCourseID();
     }
     
     public boolean addOnlineCourse(OnlineCourse oc){

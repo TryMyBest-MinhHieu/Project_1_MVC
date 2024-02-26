@@ -4,6 +4,7 @@
  */
 package DAL;
 
+import DTO.CourseInfo;
 import DTO.OnlineCourse;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,6 +19,9 @@ import java.util.logging.Logger;
  * @author MinhHieu
  */
 public class OnlineCourseDAL extends ConnectData{
+    
+    
+    // lấy danh sách
     public ArrayList<OnlineCourse> getAllOnlineCourse(){
         ArrayList<OnlineCourse> list = new ArrayList<>();
         if(OpenConnection()){
@@ -39,29 +43,9 @@ public class OnlineCourseDAL extends ConnectData{
         }
         
         return list;
-    }
+    }    
     
-    public ArrayList<Integer> getAllCourseID(){
-        ArrayList<Integer> list = new ArrayList<>();
-        if(OpenConnection()){
-            try {
-                String sql = "select CourseID from Course";
-                Statement stm = conn.createStatement();
-                ResultSet rs = stm.executeQuery(sql);
-                while(rs.next()){
-                    list.add(Integer.valueOf(rs.getInt("CourseID")));
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(OnlineCourseDAL.class.getName()).log(Level.SEVERE, null, ex);
-            } finally{
-                //closeConnection();
-            }
-        }
-        
-        
-        return list;
-    }
-    
+    // KT Id tồn tại
     public boolean checkCourseID(int courseID){
         boolean check = false;
         if(OpenConnection()){
@@ -127,7 +111,7 @@ public class OnlineCourseDAL extends ConnectData{
         boolean check = false;
         if(OpenConnection()){
             try {
-                String sql = "Update OnlineCourse set OcUrl = ? where CourseID = ?";
+                String sql = "Update OnlineCourse set Url = ? where CourseID = ?";
                 PreparedStatement stm = conn.prepareStatement(sql);
                 stm.setInt(2, oc.getCourseID());
                 stm.setString(1, oc.getUrl());
@@ -165,7 +149,8 @@ public class OnlineCourseDAL extends ConnectData{
                 
             }
         }
-        
         return list;
     }
+    
+    
 }

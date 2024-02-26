@@ -10,15 +10,13 @@ import java.util.ArrayList;
 import java.sql.Date;
 
 // Thêm, sửa, xóa
-public class PersonDAL {
-    ConnectData cd = new ConnectData();
-    Connection conn = cd.GetConnection();
+public class PersonDAL extends ConnectData{
     
     //int PersionID, String Lastname, String Firstname, Date HireDate, Date EnrollmentDate
     public ArrayList<Person> GetAllListPerson(){
         ArrayList<Person> personList = new ArrayList<Person>();
         String sql = "SELECT * FROM person";
-        if (cd.OpenConnection()) {
+        if (OpenConnection()) {
             try {
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql);
@@ -33,7 +31,7 @@ public class PersonDAL {
                 }
             } catch (SQLException ex) {
                 System.out.println("khong tim thay danh sach" + ex);
-            }finally{ cd.CloseConnection();}
+            }finally{CloseConnection();}
         } else {
             System.out.println("Kết nối không thành công.");
         }
@@ -44,7 +42,7 @@ public class PersonDAL {
     public boolean AddPerson(Person ps){
         boolean result = false;
         String sql = "INSERT INTO person VALUES(?,?,?,?,?)";
-        if(cd.OpenConnection()){
+        if(OpenConnection()){
             try {
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 stmt.setInt(1, ps.getPersionID());
@@ -56,7 +54,7 @@ public class PersonDAL {
                     result = true;
             } catch (SQLException ex) {
                 System.out.println("Them that bai" + ex);
-            }finally{ cd.CloseConnection();}
+            }finally{CloseConnection();}
         }else {
             System.out.println("Kết nối không thành công.");
         }
@@ -66,7 +64,7 @@ public class PersonDAL {
     public boolean UpdatePerson(Person ps){
         boolean result = false;
         String sql = "UPDATE person SET Lastname = ?, Firstname = ?, HireDate = ?, EnrollmentDate = ? WHERE PersionID = ?";
-        if(cd.OpenConnection()){
+        if(OpenConnection()){
             try {
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 stmt.setInt(1, ps.getPersionID());
@@ -78,7 +76,7 @@ public class PersonDAL {
                     result = true;
             } catch (SQLException ex) {
                 System.out.println("Cap nhat that bai" + ex);
-            }finally{ cd.CloseConnection();}
+            }finally{CloseConnection();}
         }else {
             System.out.println("Kết nối không thành công.");
         }
@@ -88,7 +86,7 @@ public class PersonDAL {
     public boolean DeletePerson(int psID){
         boolean result = false;
         String sql = "DELETE FROM person WHERE PersonID = ?";
-        if(cd.OpenConnection()){
+        if(OpenConnection()){
             try {
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 stmt.setInt(1, psID);
@@ -96,7 +94,7 @@ public class PersonDAL {
                      result = true;
             } catch (SQLException ex) {
                 System.out.println("Xoa that bai" + ex);
-            }finally{ cd.CloseConnection();}
+            }finally{CloseConnection();}
         }else {
             System.out.println("Kết nối không thành công.");
         }

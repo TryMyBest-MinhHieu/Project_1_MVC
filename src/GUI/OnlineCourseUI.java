@@ -4,14 +4,18 @@
  */
 package GUI;
 
+import BUS.CourseBLL;
 import BUS.OnlineCourseBLL;
+import DTO.CourseInfo;
 import DTO.OnlineCourse;
 import java.awt.Point;
+import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 
 public class OnlineCourseUI extends javax.swing.JFrame {
@@ -20,11 +24,13 @@ public class OnlineCourseUI extends javax.swing.JFrame {
      * Creates new form OnlineCourseUI
      */
     private OnlineCourseBLL ocBLL = new OnlineCourseBLL();
+    private CourseBLL cBLL = new CourseBLL();
+    
     public OnlineCourseUI() {
         initComponents();
         loadTable();
         loadCbxSearch();
-        loadCbxCourseID();
+        loadCbx(); 
     }
     
     private void loadTable(){
@@ -33,7 +39,7 @@ public class OnlineCourseUI extends javax.swing.JFrame {
         dtm.addColumn("Url");
         tableOnlCourse.setModel(dtm);
         ArrayList<OnlineCourse> list = new ArrayList<>();
-        list = ocBLL.getAllOnlineCourse();
+        list = ocBLL.getAllOnlineCourse();      
         for(int i = 0;i< list.size();i++){
             OnlineCourse oc = list.get(i);
             dtm.addRow(new Object[]{
@@ -62,13 +68,27 @@ public class OnlineCourseUI extends javax.swing.JFrame {
         cbxSearch.removeAllItems();
         cbxSearch.addItem("CourseID");
         cbxSearch.addItem("Url");
+        cbxSearch.addItem("Title");
     }
     
-    private void loadCbxCourseID(){
+//    private void loadCbxCourseID(){
+//        cbxCourseID.removeAllItems();
+//        for(int i=0;i<ocBLL.getAllCourseID().size();i++){
+//            cbxCourseID.addItem(ocBLL.getAllCourseID().get(i).toString());
+//        }
+//    }
+    
+    ArrayList<CourseInfo> listCourseInfo = cBLL.getCourseInfo();
+    private void loadCbx(){
         cbxCourseID.removeAllItems();
-        for(int i=0;i<ocBLL.getAllCourseID().size();i++){
-            cbxCourseID.addItem(ocBLL.getAllCourseID().get(i).toString());
+        cbxTitle.removeAllItems();
+        for (CourseInfo csinfo : listCourseInfo ) {
+        cbxCourseID.addItem(String.valueOf(csinfo.getCourseID()));
+        cbxTitle.addItem(csinfo.getTitle());
+        
         }
+        AutoCompleteDecorator.decorate(cbxTitle);
+        
     }
     
     /**
@@ -98,6 +118,7 @@ public class OnlineCourseUI extends javax.swing.JFrame {
         cbxCourseID = new javax.swing.JComboBox<>();
         txtSearch = new javax.swing.JTextField();
         cbxSearch = new javax.swing.JComboBox<>();
+        cbxTitle = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -113,10 +134,10 @@ public class OnlineCourseUI extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(295, 295, 295)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(263, 263, 263))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -215,15 +236,32 @@ public class OnlineCourseUI extends javax.swing.JFrame {
         btnExit.setForeground(new java.awt.Color(255, 255, 255));
         btnExit.setText("Exit");
         btnExit.setBorderPainted(false);
+        btnExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExitActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel4.setText("Search");
 
         cbxCourseID.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        cbxCourseID.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxCourseIDItemStateChanged(evt);
+            }
+        });
 
         txtSearch.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
 
         cbxSearch.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+
+        cbxTitle.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxTitle.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxTitleItemStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -232,34 +270,37 @@ public class OnlineCourseUI extends javax.swing.JFrame {
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(jLabel3))
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtUrl)
-                            .addComponent(cbxCourseID, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnClear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(75, 75, 75)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnExit, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnDelete, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(txtUrl, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(cbxTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(cbxCourseID, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnExit, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addGap(18, 18, 18)
                         .addComponent(cbxSearch, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(txtSearch))
-                .addContainerGap(18, Short.MAX_VALUE))
+                    .addComponent(txtSearch)
+                    .addComponent(btnSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(btnUpdate, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnAdd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -269,10 +310,11 @@ public class OnlineCourseUI extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel2)
-                        .addComponent(cbxCourseID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cbxTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel4)
-                        .addComponent(cbxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cbxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbxCourseID, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel3)
@@ -283,17 +325,18 @@ public class OnlineCourseUI extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnSearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnAdd)
                             .addComponent(btnDelete))
-                        .addGap(93, 93, 93)
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnUpdate)
-                            .addComponent(btnSearch))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnExit)
-                            .addComponent(btnClear))))
+                            .addComponent(btnClear))
+                        .addGap(52, 52, 52)
+                        .addComponent(btnExit)
+                        .addGap(10, 10, 10)))
                 .addContainerGap())
         );
 
@@ -301,7 +344,7 @@ public class OnlineCourseUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -318,7 +361,7 @@ public class OnlineCourseUI extends javax.swing.JFrame {
         
         OnlineCourse oc = new OnlineCourse(courseID, url);
         if(url.trim().equals("")){
-            JOptionPane.showMessageDialog(this, "");
+            JOptionPane.showMessageDialog(this, "Url is empty");
         } else if(ocBLL.checkCourseID(courseID)==false){
             if(ocBLL.addOnlineCourse(oc)){
                 JOptionPane.showMessageDialog(this, "Add Success");
@@ -335,7 +378,7 @@ public class OnlineCourseUI extends javax.swing.JFrame {
         int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
         if(ocBLL.checkCourseID(courseID) == false){
             JOptionPane.showMessageDialog(this, "CourseID doesnt exist");
-        } else{
+        } else if (JOptionPane.showConfirmDialog(null, "Xác nhận xóa", "Warnning", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
             if(ocBLL.deleteOnlineCourse(courseID)){
                 JOptionPane.showMessageDialog(this, "Delete Success");
                 loadTable();
@@ -360,7 +403,7 @@ public class OnlineCourseUI extends javax.swing.JFrame {
         OnlineCourse oc = new OnlineCourse(courseID, url);
         
         if(url.trim().equals("")){
-            JOptionPane.showMessageDialog(this, "");
+            JOptionPane.showMessageDialog(this, "Choose one");
         } else if(ocBLL.checkCourseID(courseID)){
             if(ocBLL.updateOnlineCourse(oc)){
                 JOptionPane.showMessageDialog(this, "Update Success");
@@ -375,10 +418,14 @@ public class OnlineCourseUI extends javax.swing.JFrame {
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         String data = txtSearch.getText();
-        if(cbxSearch.getSelectedIndex() == 0){
+        String selectedSearchType = (String) cbxSearch.getSelectedItem();
+        if("CourseID".equals(selectedSearchType)){
             loadTableSearch("CourseID", data);
-        } else if(cbxSearch.getSelectedIndex() == 1){
+        } else if("Url".equals(selectedSearchType)){
             loadTableSearch("OcUrl", data);
+        } else if ("Title".equals(selectedSearchType)){
+            String data1 = String.valueOf(cBLL.getCourseIDByTitle(data));
+            loadTableSearch("CourseID", data1);
         }
     }//GEN-LAST:event_btnSearchActionPerformed
 
@@ -398,8 +445,37 @@ public class OnlineCourseUI extends javax.swing.JFrame {
             String url = model.getValueAt(i, 1).toString();
             OnlineCourse oc = new OnlineCourse(courseID, url);
             new OnlineCourseDetail(oc).setVisible(true);
+            
         }
     }//GEN-LAST:event_tableOnlCourseMousePressed
+
+    private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
+        int message = JOptionPane.showConfirmDialog(null, "Bạn có chắc muốn thoát!!!", "Quit", JOptionPane.YES_NO_OPTION);
+        if (message == JOptionPane.YES_OPTION) {
+            this.dispose();
+        }
+    }//GEN-LAST:event_btnExitActionPerformed
+
+    private void cbxTitleItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxTitleItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            String selectedTitle = (String) cbxTitle.getSelectedItem();
+            int selectedCourseID = cBLL.getCourseIDByTitle(selectedTitle);
+            if (selectedCourseID != -1) {
+                cbxCourseID.setSelectedItem(String.valueOf(selectedCourseID));
+            }
+        }
+    }//GEN-LAST:event_cbxTitleItemStateChanged
+
+    private void cbxCourseIDItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxCourseIDItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            // Lấy courseID được chọn từ cb1
+            int selectedCourseID = Integer.parseInt((String) cbxCourseID.getSelectedItem());
+            String selectedTitle = cBLL.getTitleByCourseID(selectedCourseID);
+            if (selectedTitle != null) {
+                cbxTitle.setSelectedItem(selectedTitle);
+            }
+        }
+    }//GEN-LAST:event_cbxCourseIDItemStateChanged
 
     
     
@@ -448,6 +524,7 @@ public class OnlineCourseUI extends javax.swing.JFrame {
     private javax.swing.JButton btnUpdate;
     private javax.swing.JComboBox<String> cbxCourseID;
     private javax.swing.JComboBox<String> cbxSearch;
+    private javax.swing.JComboBox<String> cbxTitle;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

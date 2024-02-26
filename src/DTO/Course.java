@@ -52,4 +52,6 @@ public class Course {
     public void setDepartmentID(int departmentID) {
         this.departmentID = departmentID;
     }
+    
 }
+
