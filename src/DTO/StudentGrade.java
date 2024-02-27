@@ -1,14 +1,20 @@
 package DTO;
+
 import java.math.BigDecimal;
+
 /**
  *
  * @author MinhHieu
  */
 public class StudentGrade {
+
     private int enrollmentID;
     private int courseID;
     private int studentID;
     private double grade;
+    private String firstName;
+    private String lastName;
+    private String title;
 
     public StudentGrade() {
     }
@@ -18,6 +24,30 @@ public class StudentGrade {
         this.courseID = courseID;
         this.studentID = studentID;
         this.grade = grade;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public int getEnrollmentID() {
@@ -51,6 +81,5 @@ public class StudentGrade {
     public void setGrade(double grade) {
         this.grade = grade;
     }
-    
-    
+
 }

@@ -10,9 +10,10 @@ import java.awt.Point;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-
 
 public class StudentGradeUI extends javax.swing.JFrame {
 
@@ -20,71 +21,97 @@ public class StudentGradeUI extends javax.swing.JFrame {
      * Creates new form OnlineCourseUI
      */
     private StudentGradeBLL sgBLL = new StudentGradeBLL();
+
+    private enum Status {
+        ADD, UPDATE
+    }
+    private Status status;
+
     public StudentGradeUI() {
         initComponents();
         loadTable();
-        loadCbxSearch();
         loadCbxCourseID();
         loadCbxStudentID();
+        AddSearchEvent();
+//        cbxSearch.setEnabled(false);
     }
-    
-    private void loadTable(){
+
+    private void SearchTextChange() {
         DefaultTableModel dtm = new DefaultTableModel();
-        dtm.addColumn("EnrollmentID");
-        dtm.addColumn("CourseID");
-        dtm.addColumn("StudentID");
+        dtm.addColumn("Enrollment ID");
+        dtm.addColumn("Course ID");
+        dtm.addColumn("Title");
+        dtm.addColumn("Student ID");
+        dtm.addColumn("FirstName");
+        dtm.addColumn("LastName");
+        dtm.addColumn("Grade");
+        tableStudentGrade.setModel(dtm);
+        ArrayList<StudentGrade> list = new ArrayList<>();
+        list = sgBLL.searchStudentGrade(txtSearch.getText());
+        for (int i = 0; i < list.size(); i++) {
+            StudentGrade oc = list.get(i);
+            dtm.addRow(new Object[]{
+                oc.getEnrollmentID(), oc.getCourseID(), oc.getTitle(),
+                oc.getStudentID(), oc.getFirstName(), oc.getLastName(), oc.getGrade()
+            });
+        }
+    }
+
+    private void AddSearchEvent() {
+        txtSearch.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                SearchTextChange();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                SearchTextChange();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+        });
+    }
+
+    private void loadTable() {
+        DefaultTableModel dtm = new DefaultTableModel();
+        dtm.addColumn("Enrollment ID");
+        dtm.addColumn("Course ID");
+        dtm.addColumn("Title");
+        dtm.addColumn("Student ID");
+        dtm.addColumn("FirstName");
+        dtm.addColumn("LastName");
         dtm.addColumn("Grade");
         tableStudentGrade.setModel(dtm);
         ArrayList<StudentGrade> list = new ArrayList<>();
         list = sgBLL.getAllStudentGrade();
-        for(int i = 0;i< list.size();i++){
+        for (int i = 0; i < list.size(); i++) {
             StudentGrade oc = list.get(i);
             dtm.addRow(new Object[]{
-                oc.getEnrollmentID(), oc.getCourseID(), oc.getStudentID(), oc.getGrade()
+                oc.getEnrollmentID(), oc.getCourseID(), oc.getTitle(),
+                oc.getStudentID(), oc.getFirstName(), oc.getLastName(), oc.getGrade()
             });
         }
-        
+
     }
 
-    private void loadTableSearch(String column, String data){
-        DefaultTableModel dtm = new DefaultTableModel();
-        dtm.addColumn("EnrollmentID");
-        dtm.addColumn("CourseID");
-        dtm.addColumn("StudentID");
-        dtm.addColumn("Grade");
-        tableStudentGrade.setModel(dtm);
-        ArrayList<StudentGrade> list = new ArrayList<>();
-        list = sgBLL.searchStudentGrade(column, data);
-        for(int i = 0;i< list.size();i++){
-            StudentGrade oc = list.get(i);
-            dtm.addRow(new Object[]{
-                oc.getEnrollmentID(), oc.getCourseID(), oc.getStudentID(), oc.getGrade()
-            });
-        }
-    }
-    
-    private void loadCbxSearch(){
-        cbxSearch.removeAllItems();
-        cbxSearch.addItem("EnrollmentID");
-        cbxSearch.addItem("CourseID");
-        cbxSearch.addItem("StudentID");
-        cbxSearch.addItem("Grade");
-    }
-    
-    private void loadCbxCourseID(){
+    private void loadCbxCourseID() {
         cbxCourseID.removeAllItems();
-        for(int i=0;i<sgBLL.getAllCourseID().size();i++){
+        for (int i = 0; i < sgBLL.getAllCourseID().size(); i++) {
             cbxCourseID.addItem(sgBLL.getAllCourseID().get(i).toString());
         }
     }
-    
-    private void loadCbxStudentID(){
+
+    private void loadCbxStudentID() {
         cbxStudentID.removeAllItems();
-        for(int i=0;i<sgBLL.getAllStudentID().size();i++){
+        for (int i = 0; i < sgBLL.getAllStudentID().size(); i++) {
             cbxStudentID.addItem(sgBLL.getAllStudentID().get(i).toString());
         }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -102,20 +129,24 @@ public class StudentGradeUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableStudentGrade = new javax.swing.JTable();
         btnAdd = new javax.swing.JButton();
-        btnDelete = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
-        btnSearch = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
-        btnExit = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
-        cbxSearch = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         cbxStudentID = new javax.swing.JComboBox<>();
         cbxCourseID = new javax.swing.JComboBox<>();
         txtGrade = new javax.swing.JTextField();
         txtEnrollmentID = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        txtLastName = new javax.swing.JTextField();
+        txtFirstName = new javax.swing.JTextField();
+        txtTitle = new javax.swing.JTextField();
+        btnCancel = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -125,7 +156,9 @@ public class StudentGradeUI extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Student Grade");
+        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -134,7 +167,7 @@ public class StudentGradeUI extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addGap(290, 290, 290))
+                .addGap(376, 376, 376))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,9 +198,6 @@ public class StudentGradeUI extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableStudentGradeMouseClicked(evt);
             }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                tableStudentGradeMousePressed(evt);
-            }
         });
         jScrollPane1.setViewportView(tableStudentGrade);
 
@@ -182,17 +212,6 @@ public class StudentGradeUI extends javax.swing.JFrame {
             }
         });
 
-        btnDelete.setBackground(new java.awt.Color(255, 0, 0));
-        btnDelete.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        btnDelete.setForeground(new java.awt.Color(255, 255, 255));
-        btnDelete.setText("Delete");
-        btnDelete.setBorderPainted(false);
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
-
         btnUpdate.setBackground(new java.awt.Color(255, 0, 0));
         btnUpdate.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
@@ -201,17 +220,6 @@ public class StudentGradeUI extends javax.swing.JFrame {
         btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnUpdateActionPerformed(evt);
-            }
-        });
-
-        btnSearch.setBackground(new java.awt.Color(255, 0, 0));
-        btnSearch.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        btnSearch.setForeground(new java.awt.Color(255, 255, 255));
-        btnSearch.setText("Search");
-        btnSearch.setBorderPainted(false);
-        btnSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSearchActionPerformed(evt);
             }
         });
 
@@ -226,18 +234,10 @@ public class StudentGradeUI extends javax.swing.JFrame {
             }
         });
 
-        btnExit.setBackground(new java.awt.Color(255, 0, 0));
-        btnExit.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        btnExit.setForeground(new java.awt.Color(255, 255, 255));
-        btnExit.setText("Exit");
-        btnExit.setBorderPainted(false);
-
         jLabel4.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel4.setText("Search");
 
         txtSearch.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-
-        cbxSearch.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel5.setText("Student ID");
@@ -246,13 +246,58 @@ public class StudentGradeUI extends javax.swing.JFrame {
         jLabel6.setText("Grade");
 
         cbxStudentID.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        cbxStudentID.setEnabled(false);
 
         cbxCourseID.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        cbxCourseID.setEnabled(false);
 
         txtGrade.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        txtGrade.setEnabled(false);
 
         txtEnrollmentID.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         txtEnrollmentID.setEnabled(false);
+
+        jLabel7.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jLabel7.setText("FirstName");
+
+        jLabel8.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jLabel8.setText("LastName");
+
+        jLabel9.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jLabel9.setText("Title");
+
+        txtLastName.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        txtLastName.setEnabled(false);
+
+        txtFirstName.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        txtFirstName.setEnabled(false);
+
+        txtTitle.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        txtTitle.setEnabled(false);
+
+        btnCancel.setBackground(new java.awt.Color(255, 0, 0));
+        btnCancel.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        btnCancel.setForeground(new java.awt.Color(255, 255, 255));
+        btnCancel.setText("Cancel");
+        btnCancel.setBorderPainted(false);
+        btnCancel.setEnabled(false);
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
+
+        btnSave.setBackground(new java.awt.Color(255, 0, 0));
+        btnSave.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        btnSave.setForeground(new java.awt.Color(255, 255, 255));
+        btnSave.setText("Save");
+        btnSave.setBorderPainted(false);
+        btnSave.setEnabled(false);
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -261,85 +306,94 @@ public class StudentGradeUI extends javax.swing.JFrame {
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel3))
+                            .addComponent(jLabel6))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(cbxCourseID, 0, 107, Short.MAX_VALUE)
+                            .addComponent(txtGrade, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                             .addComponent(txtEnrollmentID))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(20, 20, 20)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel5)
-                            .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtGrade)
-                            .addComponent(cbxStudentID, 0, 105, Short.MAX_VALUE)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(cbxStudentID, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(cbxCourseID, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtLastName))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtSearch))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnClear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(75, 75, 75)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnExit, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnDelete, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addGap(18, 18, 18)
-                        .addComponent(cbxSearch, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(txtSearch))
-                .addContainerGap(18, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 844, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnCancel, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+                            .addComponent(btnSave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnClear, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnAdd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel4)
-                                .addComponent(cbxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtGrade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(cbxStudentID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtEnrollmentID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(16, 16, 16)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(cbxCourseID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(cbxStudentID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtEnrollmentID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel8)
+                    .addComponent(txtFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtLastName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(34, 34, 34)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtGrade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(cbxCourseID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel4)
+                    .addComponent(txtTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnAdd)
-                            .addComponent(btnDelete))
-                        .addGap(93, 93, 93)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnUpdate)
-                            .addComponent(btnSearch))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnExit)
-                            .addComponent(btnClear))))
+                        .addGap(20, 20, 20)
+                        .addComponent(btnAdd)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnUpdate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnClear)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCancel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnSave)
+                        .addGap(6, 6, 6)))
                 .addContainerGap())
         );
 
@@ -359,80 +413,68 @@ public class StudentGradeUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-       
-        int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
-        int studentID = Integer.parseInt(cbxStudentID.getSelectedItem().toString());
-        double grade = Double.parseDouble(txtGrade.getText());
-        
-        StudentGrade sg = new StudentGrade(0, courseID, studentID, grade);
+        btnAdd.setEnabled(false);
+        btnUpdate.setEnabled(false);
+        btnClear.setEnabled(false);
+        btnSave.setEnabled(true);
+        btnCancel.setEnabled(true);
+        status = Status.ADD;
 
-        if (txtGrade.getText().trim().equals("")) {
-            JOptionPane.showMessageDialog(this, "");
-        } else if (sgBLL.addStudentGrade(sg)) {
-            JOptionPane.showMessageDialog(this, "Add Success");
-            loadTable();
-        } else {
-            JOptionPane.showMessageDialog(this, "Add Fail");
-        }
-        
-         
+//        int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
+//        int studentID = Integer.parseInt(cbxStudentID.getSelectedItem().toString());
+//        double grade = Double.parseDouble(txtGrade.getText());
+//        
+//        StudentGrade sg = new StudentGrade(0, courseID, studentID, grade);
+//
+//        if (txtGrade.getText().trim().equals("")) {
+//            JOptionPane.showMessageDialog(this, "");
+//        } else if (sgBLL.addStudentGrade(sg)) {
+//            JOptionPane.showMessageDialog(this, "Add Success");
+//            loadTable();
+//        } else {
+//            JOptionPane.showMessageDialog(this, "Add Fail");
+//        }
+
     }//GEN-LAST:event_btnAddActionPerformed
-
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        int enrollmentID = Integer.parseInt(txtEnrollmentID.getText());
-        if(txtEnrollmentID.getText().trim().equals("")){
-            JOptionPane.showMessageDialog(this, "Please select row to delete");
-        } else{
-            if(sgBLL.deleteStudentGrade(enrollmentID)){
-                JOptionPane.showMessageDialog(this, "Delete Success");
-                loadTable();
-            } else {
-                JOptionPane.showMessageDialog(this, "Delete Fail");
-            }
-        }
-    }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void tableStudentGradeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStudentGradeMouseClicked
         int i = tableStudentGrade.getSelectedRow();
-        if(i>=0){
+        if (i >= 0) {
             TableModel model = tableStudentGrade.getModel();
             txtEnrollmentID.setText(model.getValueAt(i, 0).toString());
             cbxCourseID.setSelectedItem(model.getValueAt(i, 1).toString());
-            cbxStudentID.setSelectedItem(model.getValueAt(i, 2).toString());
-            txtGrade.setText(model.getValueAt(i, 3).toString());
+            txtTitle.setText(model.getValueAt(i, 2).toString());
+            cbxStudentID.setSelectedItem(model.getValueAt(i, 3).toString());
+            txtFirstName.setText(model.getValueAt(i, 4).toString());
+            txtLastName.setText(model.getValueAt(i, 5).toString());
+            txtGrade.setText(model.getValueAt(i, 6).toString());
         }
     }//GEN-LAST:event_tableStudentGradeMouseClicked
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
-        int studentID = Integer.parseInt(cbxStudentID.getSelectedItem().toString());
-        int enrollmentID = Integer.parseInt(txtEnrollmentID.getText());
-        double grade = Double.parseDouble(txtGrade.getText());
-        
-        StudentGrade sg = new StudentGrade(enrollmentID, courseID, studentID, grade);
-        if(txtEnrollmentID.getText().trim().equals("")&& txtGrade.getText().trim().equals("")){
-            JOptionPane.showMessageDialog(this, "Please select row to update");
-        } else 
-            if(sgBLL.updateStudentGrade(sg)){
-                JOptionPane.showMessageDialog(this, "Update Success");
-                loadTable();
-            } else{
-                JOptionPane.showMessageDialog(this, "Update Fail");
-            }
-    }//GEN-LAST:event_btnUpdateActionPerformed
+        btnAdd.setEnabled(false);
+        btnUpdate.setEnabled(false);
+        btnClear.setEnabled(false);
+        btnSave.setEnabled(true);
+        btnCancel.setEnabled(true);
+        status = Status.UPDATE;
 
-    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        String data = txtSearch.getText();
-        if(cbxSearch.getSelectedIndex() == 0){
-            loadTableSearch("EnrollmentID", data);
-        } else if(cbxSearch.getSelectedIndex() == 1){
-            loadTableSearch("CourseID", data);
-        }else if(cbxSearch.getSelectedIndex() == 2){
-            loadTableSearch("StudentID", data);
-        }else if(cbxSearch.getSelectedIndex() == 4){
-            loadTableSearch("Grade", data);
-        }
-    }//GEN-LAST:event_btnSearchActionPerformed
+//        int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
+//        int studentID = Integer.parseInt(cbxStudentID.getSelectedItem().toString());
+//        int enrollmentID = Integer.parseInt(txtEnrollmentID.getText());
+//        double grade = Double.parseDouble(txtGrade.getText());
+//        
+//        StudentGrade sg = new StudentGrade(enrollmentID, courseID, studentID, grade);
+//        if(txtEnrollmentID.getText().trim().equals("")&& txtGrade.getText().trim().equals("")){
+//            JOptionPane.showMessageDialog(this, "Please select row to update");
+//        } else 
+//            if(sgBLL.updateStudentGrade(sg)){
+//                JOptionPane.showMessageDialog(this, "Update Success");
+//                loadTable();
+//            } else{
+//                JOptionPane.showMessageDialog(this, "Update Fail");
+//            }
+    }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
         txtGrade.setText("");
@@ -441,23 +483,17 @@ public class StudentGradeUI extends javax.swing.JFrame {
         loadTable();
     }//GEN-LAST:event_btnClearActionPerformed
 
-    private void tableStudentGradeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStudentGradeMousePressed
-        int i = tableStudentGrade.getSelectedRow();
-        JTable table =(JTable) evt.getSource();
-        Point point = evt.getPoint();
-        if(i>=0 &&evt.getClickCount() == 2){
-            TableModel model = tableStudentGrade.getModel();
-            int enrollmentID = Integer.parseInt(model.getValueAt(i, 0).toString());
-            int courseID = Integer.parseInt(model.getValueAt(i, 1).toString());
-            int studentID = Integer.parseInt(model.getValueAt(i, 2).toString());
-            double grade = Double.parseDouble(model.getValueAt(i, 3).toString());
-            StudentGrade sg = new StudentGrade(enrollmentID, courseID, studentID, grade);
-            new StudentGradeDetail(sg).setVisible(true);
-        }
-    }//GEN-LAST:event_tableStudentGradeMousePressed
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        txtGrade.setText("");
+        txtEnrollmentID.setText("");
+        txtSearch.setText("");
+        loadTable();
+    }//GEN-LAST:event_btnCancelActionPerformed
 
-    
-    
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSaveActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -502,13 +538,11 @@ public class StudentGradeUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnClear;
-    private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnExit;
-    private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnSave;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JComboBox<String> cbxCourseID;
-    private javax.swing.JComboBox<String> cbxSearch;
     private javax.swing.JComboBox<String> cbxStudentID;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -516,12 +550,18 @@ public class StudentGradeUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tableStudentGrade;
     private javax.swing.JTextField txtEnrollmentID;
+    private javax.swing.JTextField txtFirstName;
     private javax.swing.JTextField txtGrade;
+    private javax.swing.JTextField txtLastName;
     private javax.swing.JTextField txtSearch;
+    private javax.swing.JTextField txtTitle;
     // End of variables declaration//GEN-END:variables
 }

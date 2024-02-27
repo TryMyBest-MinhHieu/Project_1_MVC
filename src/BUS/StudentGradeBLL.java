@@ -39,7 +39,7 @@ public class StudentGradeBLL {
         return sgDAL.updateStudentGrade(sg);
     }
     
-    public ArrayList<StudentGrade> searchStudentGrade(String column, String data){
-        return sgDAL.searchStudentGrade(column, data);
+    public ArrayList<StudentGrade> searchStudentGrade(String data){
+        return sgDAL.searchStudentGrade(data);
     }
 }
