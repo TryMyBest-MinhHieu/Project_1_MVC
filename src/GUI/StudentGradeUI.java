@@ -7,7 +7,10 @@ package GUI;
 import BUS.StudentGradeBLL;
 import DTO.StudentGrade;
 import java.awt.Point;
+import java.awt.event.ItemEvent;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
@@ -33,7 +36,6 @@ public class StudentGradeUI extends javax.swing.JFrame {
         loadCbxCourseID();
         loadCbxStudentID();
         AddSearchEvent();
-//        cbxSearch.setEnabled(false);
     }
 
     private void SearchTextChange() {
@@ -103,6 +105,8 @@ public class StudentGradeUI extends javax.swing.JFrame {
         for (int i = 0; i < sgBLL.getAllCourseID().size(); i++) {
             cbxCourseID.addItem(sgBLL.getAllCourseID().get(i).toString());
         }
+        cbxCourseID.setSelectedIndex(-1);
+        txtTitle.setText("");
     }
 
     private void loadCbxStudentID() {
@@ -110,6 +114,52 @@ public class StudentGradeUI extends javax.swing.JFrame {
         for (int i = 0; i < sgBLL.getAllStudentID().size(); i++) {
             cbxStudentID.addItem(sgBLL.getAllStudentID().get(i).toString());
         }
+        cbxStudentID.setSelectedIndex(-1);
+        txtFirstName.setText("");
+        txtLastName.setText("");
+    }
+
+    private boolean CheckInput() {
+        if (cbxStudentID.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(null,
+                    "Please enter Student ID!",
+                    "Error",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        }
+        if (cbxCourseID.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(null,
+                    "Please enter Course ID!",
+                    "Error",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        }
+        if (txtGrade.getText().equals("")) {
+            JOptionPane.showMessageDialog(null,
+                    "Please enter Grade!",
+                    "Error",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        }
+        // Biểu thức chính quy kiểm tra số thực từ 0 đến 10
+        String regex = "^(?:[0-4](?:\\.\\d+)?|4(?:\\.0)?)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(txtGrade.getText());
+        if (!matcher.matches()) {
+            JOptionPane.showMessageDialog(null,
+                    "Grade is real number, range from about 0 to 4!",
+                    "Error",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        }
+        if (txtGrade.getText().length() > 4) {
+            JOptionPane.showMessageDialog(null,
+                    "Grade is invalid!",
+                    "Error",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -247,14 +297,24 @@ public class StudentGradeUI extends javax.swing.JFrame {
 
         cbxStudentID.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         cbxStudentID.setEnabled(false);
+        cbxStudentID.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxStudentIDItemStateChanged(evt);
+            }
+        });
 
         cbxCourseID.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         cbxCourseID.setEnabled(false);
+        cbxCourseID.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxCourseIDItemStateChanged(evt);
+            }
+        });
 
-        txtGrade.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        txtGrade.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         txtGrade.setEnabled(false);
 
-        txtEnrollmentID.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        txtEnrollmentID.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         txtEnrollmentID.setEnabled(false);
 
         jLabel7.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
@@ -266,13 +326,13 @@ public class StudentGradeUI extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel9.setText("Title");
 
-        txtLastName.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        txtLastName.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         txtLastName.setEnabled(false);
 
-        txtFirstName.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        txtFirstName.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         txtFirstName.setEnabled(false);
 
-        txtTitle.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        txtTitle.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         txtTitle.setEnabled(false);
 
         btnCancel.setBackground(new java.awt.Color(255, 0, 0));
@@ -413,13 +473,26 @@ public class StudentGradeUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        status = Status.ADD;
         btnAdd.setEnabled(false);
         btnUpdate.setEnabled(false);
         btnClear.setEnabled(false);
+        tableStudentGrade.setEnabled(false);
         btnSave.setEnabled(true);
         btnCancel.setEnabled(true);
-        status = Status.ADD;
-
+        cbxStudentID.setEnabled(true);
+        cbxCourseID.setEnabled(true);
+        txtGrade.setEnabled(true);
+        txtGrade.setText("");
+        txtSearch.setText("");
+        txtFirstName.setText("");
+        txtLastName.setText("");
+        txtTitle.setText("");
+        cbxCourseID.setSelectedIndex(-1);
+        cbxStudentID.setSelectedIndex(-1);
+        loadTable();
+        int nextId = sgBLL.GetMaxId() + 1;
+        txtEnrollmentID.setText("" + nextId);
 //        int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
 //        int studentID = Integer.parseInt(cbxStudentID.getSelectedItem().toString());
 //        double grade = Double.parseDouble(txtGrade.getText());
@@ -452,12 +525,12 @@ public class StudentGradeUI extends javax.swing.JFrame {
     }//GEN-LAST:event_tableStudentGradeMouseClicked
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        status = Status.UPDATE;
         btnAdd.setEnabled(false);
         btnUpdate.setEnabled(false);
         btnClear.setEnabled(false);
         btnSave.setEnabled(true);
         btnCancel.setEnabled(true);
-        status = Status.UPDATE;
 
 //        int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
 //        int studentID = Integer.parseInt(cbxStudentID.getSelectedItem().toString());
@@ -477,22 +550,82 @@ public class StudentGradeUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
-        txtGrade.setText("");
         txtEnrollmentID.setText("");
+        txtGrade.setText("");
         txtSearch.setText("");
+        txtFirstName.setText("");
+        txtLastName.setText("");
+        txtTitle.setText("");
+        cbxCourseID.setSelectedIndex(-1);
+        cbxStudentID.setSelectedIndex(-1);
         loadTable();
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        txtGrade.setText("");
+        btnAdd.setEnabled(true);
+        btnUpdate.setEnabled(true);
+        btnClear.setEnabled(true);
+        tableStudentGrade.setEnabled(true);
+        btnSave.setEnabled(false);
+        btnCancel.setEnabled(false);
+        cbxStudentID.setEnabled(false);
+        cbxCourseID.setEnabled(false);
+        txtGrade.setEnabled(false);
         txtEnrollmentID.setText("");
+        txtGrade.setText("");
         txtSearch.setText("");
+        txtFirstName.setText("");
+        txtLastName.setText("");
+        txtTitle.setText("");
+        cbxCourseID.setSelectedIndex(-1);
+        cbxStudentID.setSelectedIndex(-1);
         loadTable();
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        // TODO add your handling code here:
+        if (CheckInput()) {
+            String enrollmentId = txtEnrollmentID.getText();
+            String courseId = (String) cbxCourseID.getSelectedItem();
+            String studentId = (String) cbxStudentID.getSelectedItem();
+            float grade = Float.parseFloat(txtGrade.getText());
+            if (sgBLL.GradeIsExist(courseId, studentId)) {
+                JOptionPane.showMessageDialog(null,
+                        "Students already have a grade for this course!",
+                        "Error",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                if (sgBLL.Add(enrollmentId, courseId, studentId, grade)) {
+                    JOptionPane.showMessageDialog(null,
+                            "Add Success!",
+                            "Error",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    loadTable();
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "Add Fail!",
+                            "Error",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        }
     }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void cbxStudentIDItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxStudentIDItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            // Lấy giá trị được chọn
+            int selectedId = Integer.parseInt((String) evt.getItem());
+            txtFirstName.setText(sgBLL.GetFirstNameById(selectedId));
+            txtLastName.setText(sgBLL.GetLastNameById(selectedId));
+        }
+    }//GEN-LAST:event_cbxStudentIDItemStateChanged
+
+    private void cbxCourseIDItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxCourseIDItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            // Lấy giá trị được chọn
+            int selectedId = Integer.parseInt((String) evt.getItem());
+            txtTitle.setText(sgBLL.GetTitleById(selectedId));
+        }
+    }//GEN-LAST:event_cbxCourseIDItemStateChanged
 
     /**
      * @param args the command line arguments

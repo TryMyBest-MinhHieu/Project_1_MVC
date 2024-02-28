@@ -15,6 +15,30 @@ public class StudentGradeBLL {
         return sgDAL.getAllStudentGrade();
     }
     
+    public boolean Add(String enrollmentId, String courseId, String studentId, float grade){
+        return sgDAL.Add(enrollmentId, courseId, studentId, grade);
+    }
+    
+    public boolean GradeIsExist(String courseId, String studentId){
+        return sgDAL.GradeIsExist(courseId, studentId);
+    }
+    
+    public String GetTitleById(int id){
+        return sgDAL.GetTitleById(id);
+    }
+    
+    public String GetFirstNameById(int id){
+        return sgDAL.GetFirstNameById(id);
+    }
+    
+    public String GetLastNameById(int id){
+        return sgDAL.GetLastNameById(id);
+    }
+    
+    public int GetMaxId(){
+        return sgDAL.GetMaxId();
+    }
+    
     public boolean checkStudentGradeID(int enrollmentID){
         return sgDAL.checkStudentGradeID(enrollmentID);
     }
