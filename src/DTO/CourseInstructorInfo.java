@@ -11,22 +11,23 @@ package DTO;
 public class CourseInstructorInfo {
 
     private String title;
-    private String firstname;
-    private String lastname;
+    private int courseID;
+    private int credits;
+    private int personID;
     private String fullname;
 
-    // Constructor
-    public CourseInstructorInfo(String title, String firstname, String lastname, String fullname) {
+    public CourseInstructorInfo(){}
+    
+    public CourseInstructorInfo(String title, int courseID, int credits, int personID, String fullname) {
         this.title = title;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.fullname = firstname + lastname;  
+        this.courseID = courseID;
+        this.credits = credits;
+        this.personID = personID;
+        this.fullname = fullname;
     }
 
-    public CourseInstructorInfo() {
-    }
-
-
+    
+    
     public String getTitle() {
         return title;
     }
@@ -35,20 +36,28 @@ public class CourseInstructorInfo {
         this.title = title;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public int getCourseID() {
+        return courseID;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setCourseID(int courseID) {
+        this.courseID = courseID;
     }
 
-    public String getLastname() {
-        return lastname;
+    public int getCredits() {
+        return credits;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setCredits(int credits) {
+        this.credits = credits;
+    }
+
+    public int getPersonID() {
+        return personID;
+    }
+
+    public void setPersonID(int personID) {
+        this.personID = personID;
     }
 
     public String getFullname() {

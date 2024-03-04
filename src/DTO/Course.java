@@ -53,5 +53,10 @@ public class Course {
         this.departmentID = departmentID;
     }
     
+    @Override
+    public String toString() {
+        return this.getTitle();
+    }
+    
 }
 

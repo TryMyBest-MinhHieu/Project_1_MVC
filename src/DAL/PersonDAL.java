@@ -22,7 +22,7 @@ public class PersonDAL extends ConnectData{
                 ResultSet rs = stmt.executeQuery(sql);
                 while(rs.next()){
                     Person ps = new Person();
-                    ps.setPersionID(rs.getInt("PersionID"));
+                    ps.setPersionID(rs.getInt("PersonID"));
                     ps.setLastname(rs.getString("Lastname"));
                     ps.setFirstname(rs.getString("Firstname"));
                     ps.setHireDate(rs.getDate("HireDate"));
