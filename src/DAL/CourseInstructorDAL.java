@@ -111,9 +111,7 @@ public class CourseInstructorDAL extends ConnectData{
 
         return ciiList;
     }
-    
- 
-    
+   
     public boolean addCourseInstructor(CourseInstructor ci){
         boolean check = false;
         if(OpenConnection()){

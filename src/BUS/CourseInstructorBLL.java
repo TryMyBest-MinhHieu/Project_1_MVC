@@ -84,14 +84,6 @@ public class CourseInstructorBLL {
         return getCiDAL().checkCourseInstructorID(courseID, personID);
     }
 
-    public ArrayList<Integer> getAllCourseID() {
-        return getCiDAL().getAllCourseID();
-    }
-
-    public ArrayList<Integer> getAllPersonID() {
-        return getCiDAL().getAllPersonID();
-    }
-
     public boolean addCourseInstructor(CourseInstructor ci) {
         return getCiDAL().addCourseInstructor(ci);
     }
