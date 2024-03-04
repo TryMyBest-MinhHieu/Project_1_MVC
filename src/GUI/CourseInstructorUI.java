@@ -34,34 +34,12 @@ public class CourseInstructorUI extends javax.swing.JFrame {
         ciBLL = new CourseInstructorBLL();
         initComponents();
         loadUi();
-        loadTableInstructor();
 
     }
 
     private void loadUi() {
     }
-    
-    private void loadTableInstructor() {
-        DefaultTableModel dtm = new DefaultTableModel();
-        dtm.addColumn("CourseID");
-        dtm.addColumn("Title");
-        dtm.addColumn("Credits");
-        dtm.addColumn("PersonID");
-        dtm.addColumn("Fullname");
-        tableCourseInstructor.setModel(dtm);
-        ArrayList<CourseInstructorInfo> list = new ArrayList<>();
-        list = ciBLL.getAllCourseInstructorInfo();
-        for (int i = 0; i < list.size(); i++) {
-            CourseInstructorInfo ci = list.get(i);
-            dtm.addRow(new Object[]{
-                ci.getCourseID(),
-                ci.getTitle(),
-                ci.getCredits(),
-                ci.getPersonID(),
-                ci.getFullname()
-            });
-        }
-    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.

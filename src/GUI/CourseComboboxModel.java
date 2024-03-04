@@ -39,6 +39,7 @@ public class CourseComboboxModel extends AbstractListModel<Course> implements Co
 
     @Override
     public Object getSelectedItem() {
+       
         return selectedCourse;
     }
     
