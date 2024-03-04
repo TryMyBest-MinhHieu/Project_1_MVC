@@ -52,6 +52,149 @@ public class StudentGradeDAL extends ConnectData {
         return list;
     }
 
+    public boolean Update(String enrollmentId, float grade) {
+        if (OpenConnection()) {
+            String insertSql = "UPDATE studentgrade"
+                    + " SET Grade = ?"
+                    + " WHERE EnrollmentID = ?;";
+            try (PreparedStatement insertStatement = conn.prepareStatement(insertSql)) {
+                insertStatement.setFloat(1, grade);
+                insertStatement.setString(2, enrollmentId);
+                if (insertStatement.executeUpdate() > 0) {
+                    return true;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                CloseConnection();
+            }
+        }
+        return false;
+    }
+
+    public boolean Add(String enrollmentId, String courseId, String studentId, float grade) {
+        if (OpenConnection()) {
+            String insertSql = "INSERT INTO "
+                    + "studentgrade(EnrollmentID, CourseID, StudentID, Grade) "
+                    + "VALUES (?, ?, ?, ?)";
+            try (PreparedStatement insertStatement = conn.prepareStatement(insertSql)) {
+                insertStatement.setString(1, enrollmentId);
+                insertStatement.setString(2, courseId);
+                insertStatement.setString(3, studentId);
+                insertStatement.setFloat(4, grade);
+                if (insertStatement.executeUpdate() > 0) {
+                    return true;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                CloseConnection();
+            }
+        }
+        return false;
+    }
+
+    public boolean GradeIsExist(String courseId, String studentId) {
+        if (OpenConnection()) {
+            try {
+                String sql = "select *"
+                        + " from studentgrade"
+                        + " where CourseID = " + courseId
+                        + " and StudentID = " + studentId + ";";
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(sql);
+                if (rs.next()) {
+                    return true;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                CloseConnection();
+            }
+        }
+        return false;
+    }
+
+    public String GetTitleById(int id) {
+        if (OpenConnection()) {
+            try {
+                String sql = "select Title"
+                        + " from Course"
+                        + " where CourseID = " + id + ";";
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(sql);
+                if (rs.next()) {
+                    return rs.getString(1);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                CloseConnection();
+            }
+        }
+        return "";
+    }
+
+    public String GetFirstNameById(int id) {
+        if (OpenConnection()) {
+            try {
+                String sql = "select p.FirstName"
+                        + " from StudentGrade stu, Person p"
+                        + " where stu.StudentID = p.PersonId"
+                        + " and stu.EnrollmentID = " + id + ";";
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(sql);
+                if (rs.next()) {
+                    return rs.getString(1);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                CloseConnection();
+            }
+        }
+        return "";
+    }
+
+    public String GetLastNameById(int id) {
+        if (OpenConnection()) {
+            try {
+                String sql = "select p.LastName"
+                        + " from StudentGrade stu, Person p"
+                        + " where stu.StudentID = p.PersonId"
+                        + " and stu.EnrollmentID = " + id + ";";
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(sql);
+                if (rs.next()) {
+                    return rs.getString(1);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                CloseConnection();
+            }
+        }
+        return "";
+    }
+
+    public int GetMaxId() {
+        if (OpenConnection()) {
+            try {
+                String sql = "SELECT MAX(EnrollmentID) AS maxId FROM studentgrade;";
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(sql);
+                if (rs.next()) {
+                    return rs.getInt("maxId");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                CloseConnection();
+            }
+        }
+        return -1;
+    }
+
     public boolean checkStudentGradeID(int enrollmentID) {
         boolean check = false;
         if (OpenConnection()) {
