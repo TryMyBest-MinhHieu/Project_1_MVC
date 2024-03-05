@@ -22,7 +22,7 @@ public class PersonDAL extends ConnectData{
                 ResultSet rs = stmt.executeQuery(sql);
                 while(rs.next()){
                     Person ps = new Person();
-                    ps.setPersionID(rs.getInt("PersonID"));
+                    ps.setPersonID(rs.getInt("PersonID"));
                     ps.setLastname(rs.getString("Lastname"));
                     ps.setFirstname(rs.getString("Firstname"));
                     ps.setHireDate(rs.getDate("HireDate"));
@@ -45,7 +45,7 @@ public class PersonDAL extends ConnectData{
         if(OpenConnection()){
             try {
                 PreparedStatement stmt = conn.prepareStatement(sql);
-                stmt.setInt(1, ps.getPersionID());
+                stmt.setInt(1, ps.getPersonID());
                 stmt.setString(2, ps.getLastname());
                 stmt.setString(3, ps.getFirstname());
                 stmt.setDate(4, new java.sql.Date(ps.getHireDate().getTime()));
@@ -67,7 +67,7 @@ public class PersonDAL extends ConnectData{
         if(OpenConnection()){
             try {
                 PreparedStatement stmt = conn.prepareStatement(sql);
-                stmt.setInt(1, ps.getPersionID());
+                stmt.setInt(1, ps.getPersonID());
                 stmt.setString(2, ps.getLastname());
                 stmt.setString(3, ps.getFirstname());
                 stmt.setDate(4, new java.sql.Date(ps.getHireDate().getTime()));

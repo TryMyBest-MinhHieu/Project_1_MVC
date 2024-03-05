@@ -11,7 +11,7 @@ public class Course {
     private int credits;
     private int departmentID;
     
-        public Course(int courseID, String title, int credits, int departmentID) {
+    public Course(int courseID, String title, int credits, int departmentID) {
         this.courseID = courseID;
         this.title = title;
         this.credits = credits;
@@ -55,7 +55,7 @@ public class Course {
     
     @Override
     public String toString() {
-        return this.getTitle();
+        return   this.getCourseID() +" - " +this.getTitle() + " - " + this.getCredits();
     }
     
 }

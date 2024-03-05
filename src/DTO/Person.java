@@ -5,14 +5,14 @@ import java.util.Date;
  * @author MinhHieu
  */
 public class Person {
-    private int persionID;
+    private int personID;
     private String lastname;
     private String firstname;
     private Date hireDate;
     private Date enrollmentDate;
     
-    public Person(int PersionID, String Lastname, String Firstname, Date HireDate, Date EnrollmentDate) {
-        this.persionID = PersionID;
+    public Person(int PersonID, String Lastname, String Firstname, Date HireDate, Date EnrollmentDate) {
+        this.personID = PersonID;
         this.lastname = Lastname;
         this.firstname = Firstname;
         this.hireDate = HireDate;
@@ -21,12 +21,12 @@ public class Person {
     
     public Person(){}
 
-    public int getPersionID() {
-        return persionID;
+    public int getPersonID() {
+        return personID;
     }
 
-    public void setPersionID(int PersionID) {
-        this.persionID = PersionID;
+    public void setPersonID(int PersonID) {
+        this.personID = PersonID;
     }
 
     public String getLastname() {

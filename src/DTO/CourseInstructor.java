@@ -5,31 +5,45 @@ package DTO;
  * @author MinhHieu
  */
 public class CourseInstructor {
+    private Person person;
+    private Course course;
+    private String departmentName;
 
-    private int courseID;
-    private int personID;
+   
     
-        public CourseInstructor() {
+    public CourseInstructor() {
+        person = new Person();
+        course = new Course();
     }
 
-    public CourseInstructor(int courseID, int personID) {
-        this.courseID = courseID;
-        this.personID = personID;
+    public CourseInstructor(Person person, Course course) {
+        this.person = person;
+        this.course = course;
+    }
+    
+     public String getDepartmentName() {
+        return departmentName;
     }
 
-    public int getCourseID() {
-        return courseID;
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 
-    public void setCourseID(int courseID) {
-        this.courseID = courseID;
+    public Person getPerson() {
+        return person;
     }
 
-    public int getPersonID() {
-        return personID;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
-    public void setPersonID(int personID) {
-        this.personID = personID;
+    public Course getCourse() {
+        return course;
     }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+    
+    
 }
