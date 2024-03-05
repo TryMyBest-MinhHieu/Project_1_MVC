@@ -20,56 +20,54 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 public class OnlineCourseUI extends javax.swing.JFrame {
 
-    /**
-     * Creates new form OnlineCourseUI
-     */
+ 
     private OnlineCourseBLL ocBLL = new OnlineCourseBLL();
     private CourseBLL cBLL = new CourseBLL();
     
     public OnlineCourseUI() {
         initComponents();
-        loadTable();
-        loadCbxSearch();
-        loadCbx(); 
+//        loadTable();
+//        loadCbxSearch();
+//        loadCbx(); 
     }
     
-    private void loadTable(){
-        DefaultTableModel dtm = new DefaultTableModel();
-        dtm.addColumn("CourseID");
-        dtm.addColumn("Url");
-        tableOnlCourse.setModel(dtm);
-        ArrayList<OnlineCourse> list = new ArrayList<>();
-        list = ocBLL.getAllOnlineCourse();      
-        for(int i = 0;i< list.size();i++){
-            OnlineCourse oc = list.get(i);
-            dtm.addRow(new Object[]{
-                oc.getCourseID(), oc.getUrl()
-            });
-        }
-        
-    }
-
-    private void loadTableSearch(String column, String data){
-        DefaultTableModel dtm = new DefaultTableModel();
-        dtm.addColumn("CourseID");
-        dtm.addColumn("Url");
-        tableOnlCourse.setModel(dtm);
-        ArrayList<OnlineCourse> list = new ArrayList<>();
-        list = ocBLL.searchOnlineCourse(column, data);
-        for(int i = 0;i< list.size();i++){
-            OnlineCourse oc = list.get(i);
-            dtm.addRow(new Object[]{
-                oc.getCourseID(), oc.getUrl()
-            });
-        }
-    }
-    
-    private void loadCbxSearch(){
-        cbxSearch.removeAllItems();
-        cbxSearch.addItem("CourseID");
-        cbxSearch.addItem("Url");
-        cbxSearch.addItem("Title");
-    }
+//    private void loadTable(){
+//        DefaultTableModel dtm = new DefaultTableModel();
+//        dtm.addColumn("CourseID");
+//        dtm.addColumn("Url");
+//        tableOnlCourse.setModel(dtm);
+//        ArrayList<OnlineCourse> list = new ArrayList<>();
+//        list = ocBLL.getAllOnlineCourse();      
+//        for(int i = 0;i< list.size();i++){
+//            OnlineCourse oc = list.get(i);
+//            dtm.addRow(new Object[]{
+//                oc.getCourseID(), oc.getUrl()
+//            });
+//        }
+//        
+//    }
+//
+//    private void loadTableSearch(String column, String data){
+//        DefaultTableModel dtm = new DefaultTableModel();
+//        dtm.addColumn("CourseID");
+//        dtm.addColumn("Url");
+//        tableOnlCourse.setModel(dtm);
+//        ArrayList<OnlineCourse> list = new ArrayList<>();
+//        list = ocBLL.searchOnlineCourse(column, data);
+//        for(int i = 0;i< list.size();i++){
+//            OnlineCourse oc = list.get(i);
+//            dtm.addRow(new Object[]{
+//                oc.getCourseID(), oc.getUrl()
+//            });
+//        }
+//    }
+//    
+//    private void loadCbxSearch(){
+//        cbxSearch.removeAllItems();
+//        cbxSearch.addItem("CourseID");
+//        cbxSearch.addItem("Url");
+//        cbxSearch.addItem("Title");
+//    }
     
 //    private void loadCbxCourseID(){
 //        cbxCourseID.removeAllItems();
@@ -78,18 +76,18 @@ public class OnlineCourseUI extends javax.swing.JFrame {
 //        }
 //    }
     
-    ArrayList<CourseInfo> listCourseInfo = cBLL.getCourseInfo();
-    private void loadCbx(){
-        cbxCourseID.removeAllItems();
-        cbxTitle.removeAllItems();
-        for (CourseInfo csinfo : listCourseInfo ) {
-        cbxCourseID.addItem(String.valueOf(csinfo.getCourseID()));
-        cbxTitle.addItem(csinfo.getTitle());
-        
-        }
-        AutoCompleteDecorator.decorate(cbxTitle);
-        
-    }
+//    ArrayList<CourseInfo> listCourseInfo = cBLL.getCourseInfo();
+//    private void loadCbx(){
+//        cbxCourseID.removeAllItems();
+//        cbxTitle.removeAllItems();
+//        for (CourseInfo csinfo : listCourseInfo ) {
+//        cbxCourseID.addItem(String.valueOf(csinfo.getCourseID()));
+//        cbxTitle.addItem(csinfo.getTitle());
+//        
+//        }
+//        AutoCompleteDecorator.decorate(cbxTitle);
+//        
+//    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -356,164 +354,128 @@ public class OnlineCourseUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
-        String url = txtUrl.getText();
-        
-        OnlineCourse oc = new OnlineCourse(courseID, url);
-        if(url.trim().equals("")){
-            JOptionPane.showMessageDialog(this, "Url is empty");
-        } else if(ocBLL.checkCourseID(courseID)==false){
-            if(ocBLL.addOnlineCourse(oc)){
-                JOptionPane.showMessageDialog(this, "Add Success");
-                loadTable();
-            } else{
-                JOptionPane.showMessageDialog(this, "Add Fail");
-            }
-        } else{
-            JOptionPane.showMessageDialog(this, "CourseID Exist");
-        }
+//        int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
+//        String url = txtUrl.getText();
+//        
+//        OnlineCourse oc = new OnlineCourse(courseID, url);
+//        if(url.trim().equals("")){
+//            JOptionPane.showMessageDialog(this, "Url is empty");
+//        } else if(ocBLL.checkCourseID(courseID)==false){
+//            if(ocBLL.addOnlineCourse(oc)){
+//                JOptionPane.showMessageDialog(this, "Add Success");
+//                loadTable();
+//            } else{
+//                JOptionPane.showMessageDialog(this, "Add Fail");
+//            }
+//        } else{
+//            JOptionPane.showMessageDialog(this, "CourseID Exist");
+//        }
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
-        if(ocBLL.checkCourseID(courseID) == false){
-            JOptionPane.showMessageDialog(this, "CourseID doesnt exist");
-        } else if (JOptionPane.showConfirmDialog(null, "Xác nhận xóa", "Warnning", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
-            if(ocBLL.deleteOnlineCourse(courseID)){
-                JOptionPane.showMessageDialog(this, "Delete Success");
-                loadTable();
-            } else {
-                JOptionPane.showMessageDialog(this, "Delete Fail");
-            }
-        }
+//        int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
+//        if(ocBLL.checkCourseID(courseID) == false){
+//            JOptionPane.showMessageDialog(this, "CourseID doesnt exist");
+//        } else if (JOptionPane.showConfirmDialog(null, "Xác nhận xóa", "Warnning", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+//            if(ocBLL.deleteOnlineCourse(courseID)){
+//                JOptionPane.showMessageDialog(this, "Delete Success");
+//                loadTable();
+//            } else {
+//                JOptionPane.showMessageDialog(this, "Delete Fail");
+//            }
+//        }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void tableOnlCourseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableOnlCourseMouseClicked
-        int i = tableOnlCourse.getSelectedRow();
-        if(i>=0){
-            TableModel model = tableOnlCourse.getModel();
-            txtUrl.setText(model.getValueAt(i, 1).toString());
-            cbxCourseID.setSelectedItem(model.getValueAt(i, 0).toString());
-        }
+//        int i = tableOnlCourse.getSelectedRow();
+//        if(i>=0){
+//            TableModel model = tableOnlCourse.getModel();
+//            txtUrl.setText(model.getValueAt(i, 1).toString());
+//            cbxCourseID.setSelectedItem(model.getValueAt(i, 0).toString());
+//        }
     }//GEN-LAST:event_tableOnlCourseMouseClicked
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
-        String url = txtUrl.getText();
-        OnlineCourse oc = new OnlineCourse(courseID, url);
-        
-        if(url.trim().equals("")){
-            JOptionPane.showMessageDialog(this, "Choose one");
-        } else if(ocBLL.checkCourseID(courseID)){
-            if(ocBLL.updateOnlineCourse(oc)){
-                JOptionPane.showMessageDialog(this, "Update Success");
-                loadTable();
-            } else{
-                JOptionPane.showMessageDialog(this, "Update Fail");
-            }
-        } else{
-            JOptionPane.showMessageDialog(this, "CourseID doesnt exist");
-        }
+//        int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
+//        String url = txtUrl.getText();
+//        OnlineCourse oc = new OnlineCourse(courseID, url);
+//        
+//        if(url.trim().equals("")){
+//            JOptionPane.showMessageDialog(this, "Choose one");
+//        } else if(ocBLL.checkCourseID(courseID)){
+//            if(ocBLL.updateOnlineCourse(oc)){
+//                JOptionPane.showMessageDialog(this, "Update Success");
+//                loadTable();
+//            } else{
+//                JOptionPane.showMessageDialog(this, "Update Fail");
+//            }
+//        } else{
+//            JOptionPane.showMessageDialog(this, "CourseID doesnt exist");
+//        }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        String data = txtSearch.getText();
-        String selectedSearchType = (String) cbxSearch.getSelectedItem();
-        if("CourseID".equals(selectedSearchType)){
-            loadTableSearch("CourseID", data);
-        } else if("Url".equals(selectedSearchType)){
-            loadTableSearch("OcUrl", data);
-        } else if ("Title".equals(selectedSearchType)){
-            String data1 = String.valueOf(cBLL.getCourseIDByTitle(data));
-            loadTableSearch("CourseID", data1);
-        }
+//        String data = txtSearch.getText();
+//        String selectedSearchType = (String) cbxSearch.getSelectedItem();
+//        if("CourseID".equals(selectedSearchType)){
+//            loadTableSearch("CourseID", data);
+//        } else if("Url".equals(selectedSearchType)){
+//            loadTableSearch("OcUrl", data);
+//        } else if ("Title".equals(selectedSearchType)){
+//            String data1 = String.valueOf(cBLL.getCourseIDByTitle(data));
+//            loadTableSearch("CourseID", data1);
+//        }
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
-        txtUrl.setText("");
-        txtSearch.setText("");
-        loadTable();
+//        txtUrl.setText("");
+//        txtSearch.setText("");
+//        loadTable();
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void tableOnlCourseMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableOnlCourseMousePressed
-        int i = tableOnlCourse.getSelectedRow();
-        JTable table =(JTable) evt.getSource();
-        Point point = evt.getPoint();
-        if(i>=0 && evt.getClickCount() == 2){
-            TableModel model = tableOnlCourse.getModel();
-            int courseID = Integer.parseInt(model.getValueAt(i, 0).toString());
-            String url = model.getValueAt(i, 1).toString();
-            OnlineCourse oc = new OnlineCourse(courseID, url);
-            new OnlineCourseDetail(oc).setVisible(true);
-            
-        }
+//        int i = tableOnlCourse.getSelectedRow();
+//        JTable table =(JTable) evt.getSource();
+//        Point point = evt.getPoint();
+//        if(i>=0 && evt.getClickCount() == 2){
+//            TableModel model = tableOnlCourse.getModel();
+//            int courseID = Integer.parseInt(model.getValueAt(i, 0).toString());
+//            String url = model.getValueAt(i, 1).toString();
+//            OnlineCourse oc = new OnlineCourse(courseID, url);
+//            new OnlineCourseDetail(oc).setVisible(true);
+//            
+//        }
     }//GEN-LAST:event_tableOnlCourseMousePressed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
-        int message = JOptionPane.showConfirmDialog(null, "Bạn có chắc muốn thoát!!!", "Quit", JOptionPane.YES_NO_OPTION);
-        if (message == JOptionPane.YES_OPTION) {
-            this.dispose();
-        }
+//        int message = JOptionPane.showConfirmDialog(null, "Bạn có chắc muốn thoát!!!", "Quit", JOptionPane.YES_NO_OPTION);
+//        if (message == JOptionPane.YES_OPTION) {
+//            this.dispose();
+//        }
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void cbxTitleItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxTitleItemStateChanged
-        if (evt.getStateChange() == ItemEvent.SELECTED) {
-            String selectedTitle = (String) cbxTitle.getSelectedItem();
-            int selectedCourseID = cBLL.getCourseIDByTitle(selectedTitle);
-            if (selectedCourseID != -1) {
-                cbxCourseID.setSelectedItem(String.valueOf(selectedCourseID));
-            }
-        }
+//        if (evt.getStateChange() == ItemEvent.SELECTED) {
+//            String selectedTitle = (String) cbxTitle.getSelectedItem();
+//            int selectedCourseID = cBLL.getCourseIDByTitle(selectedTitle);
+//            if (selectedCourseID != -1) {
+//                cbxCourseID.setSelectedItem(String.valueOf(selectedCourseID));
+//            }
+//        }
     }//GEN-LAST:event_cbxTitleItemStateChanged
 
     private void cbxCourseIDItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxCourseIDItemStateChanged
-        if (evt.getStateChange() == ItemEvent.SELECTED) {
-            // Lấy courseID được chọn từ cb1
-            int selectedCourseID = Integer.parseInt((String) cbxCourseID.getSelectedItem());
-            String selectedTitle = cBLL.getTitleByCourseID(selectedCourseID);
-            if (selectedTitle != null) {
-                cbxTitle.setSelectedItem(selectedTitle);
-            }
-        }
+//        if (evt.getStateChange() == ItemEvent.SELECTED) {
+//            // Lấy courseID được chọn từ cb1
+//            int selectedCourseID = Integer.parseInt((String) cbxCourseID.getSelectedItem());
+//            String selectedTitle = cBLL.getTitleByCourseID(selectedCourseID);
+//            if (selectedTitle != null) {
+//                cbxTitle.setSelectedItem(selectedTitle);
+//            }
+//        }
     }//GEN-LAST:event_cbxCourseIDItemStateChanged
 
     
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(OnlineCourseUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(OnlineCourseUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(OnlineCourseUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(OnlineCourseUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new OnlineCourseUI().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;

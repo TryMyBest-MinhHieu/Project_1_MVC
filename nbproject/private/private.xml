@@ -3,15 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/User/workspace/daihoc/MHPL/Project_1/Project_1_MVC/src/GUI/CourseComboboxModel.java</file>
-            <file>file:/D:/User/workspace/daihoc/MHPL/Project_1/Project_1_MVC/src/GUI/CourseInstructorDetail.java</file>
-            <file>file:/D:/User/workspace/daihoc/MHPL/Project_1/Project_1_MVC/src/DTO/CourseInstructor.java</file>
-            <file>file:/D:/User/workspace/daihoc/MHPL/Project_1/Project_1_MVC/src/DAL/CourseInstructorDAL.java</file>
-            <file>file:/D:/User/workspace/daihoc/MHPL/Project_1/Project_1_MVC/src/DAL/CourseInstructorInfo.java</file>
-            <file>file:/D:/User/workspace/daihoc/MHPL/Project_1/Project_1_MVC/src/DTO/CourseInstructorInfo.java</file>
-            <file>file:/D:/User/workspace/daihoc/MHPL/Project_1/Project_1_MVC/src/BUS/CourseInstructorBLL.java</file>
-            <file>file:/D:/User/workspace/daihoc/MHPL/Project_1/Project_1_MVC/src/DAL/PersonDAL.java</file>
-            <file>file:/D:/User/workspace/daihoc/MHPL/Project_1/Project_1_MVC/src/GUI/CourseInstructorUI.java</file>
+            <file>file:/C:/Users/MinhHieu/Documents/NetBeansProjects/Project_1_School/src/GUI/addCourseUI.java</file>
+            <file>file:/C:/Users/MinhHieu/Documents/NetBeansProjects/Project_1_School/src/GUI/CourseUI.java</file>
+            <file>file:/C:/Users/MinhHieu/Documents/NetBeansProjects/Project_1_School/src/DAL/CourseInstructorDAL.java</file>
+            <file>file:/C:/Users/MinhHieu/Documents/NetBeansProjects/Project_1_School/src/DAL/OnsiteCourseDAL.java</file>
+            <file>file:/C:/Users/MinhHieu/Documents/NetBeansProjects/Project_1_School/src/BUS/CourseBLL.java</file>
+            <file>file:/C:/Users/MinhHieu/Documents/NetBeansProjects/Project_1_School/src/BUS/CourseInstructorBLL.java</file>
+            <file>file:/C:/Users/MinhHieu/Documents/NetBeansProjects/Project_1_School/src/main/MainClass.java</file>
+            <file>file:/C:/Users/MinhHieu/Documents/NetBeansProjects/Project_1_School/src/DAL/CourseDAL.java</file>
         </group>
     </open-files>
 </project-private>
