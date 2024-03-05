@@ -105,6 +105,7 @@ public class UpdateCourseInstructorDialog extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblInstructor = new javax.swing.JTable();
 
+        setTitle("Assign Course Instructor");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 closeDialog(evt);
