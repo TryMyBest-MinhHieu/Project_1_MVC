@@ -6,6 +6,7 @@ package BUS;
 
 import DAL.CourseDAL;
 import DAL.OnlineCourseDAL;
+import DTO.Course;
 import DTO.CourseInfo;
 import java.util.ArrayList;
 
@@ -16,19 +17,24 @@ import java.util.ArrayList;
 public class CourseBLL {
     CourseDAL cDAL = new CourseDAL();
     
-    public ArrayList<String> getAllCourseTitle(){
-        return cDAL.getAllCourseTitle();
+    //Lấy danh sách
+    public ArrayList<Course> getAllCourses() {
+        return cDAL.getAllCourses();
+    } 
+    
+    //Thêm
+    public void addCourse(Course course) {
+        cDAL.addCourse(course);
     }
     
-    public ArrayList<CourseInfo> getCourseInfo(){
-        return cDAL.getAllCourseInfo();
+    // Lấy tên department
+    public ArrayList<String> getNameDepartment(){
+        return  cDAL.getNameDepartment();
     }
     
-    public int getCourseIDByTitle(String title){
-        return cDAL.getCourseIDByTitle(title);
+    //Lấy DepartmentID by Name
+    public int getIDByName(String name){
+        return cDAL.getIDByName(name);
     }
-    
-    public String getTitleByCourseID(int id){
-        return cDAL.getTitleByCourseID(id);
-    }
+
 }
