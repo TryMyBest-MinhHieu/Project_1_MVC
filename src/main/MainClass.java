@@ -9,8 +9,8 @@ import GUI.MainMenu;
  */
 public class MainClass {
     public static void main(String[] args) {
-        //MainMenu mn = new MainMenu();
-        CourseUI mn = new CourseUI();
+        MainMenu mn = new MainMenu();
+        //CourseUI mn = new CourseUI();
         mn.setVisible(true);
     }
 }

@@ -5,8 +5,11 @@
         <group>
             <file>file:/C:/Users/MinhHieu/Documents/NetBeansProjects/Project_1_School/src/GUI/addCourseUI.java</file>
             <file>file:/C:/Users/MinhHieu/Documents/NetBeansProjects/Project_1_School/src/GUI/CourseUI.java</file>
+            <file>file:/C:/Users/MinhHieu/Documents/NetBeansProjects/Project_1_School/src/DAL/CourseInstructorDAL.java</file>
             <file>file:/C:/Users/MinhHieu/Documents/NetBeansProjects/Project_1_School/src/DAL/OnsiteCourseDAL.java</file>
             <file>file:/C:/Users/MinhHieu/Documents/NetBeansProjects/Project_1_School/src/BUS/CourseBLL.java</file>
+            <file>file:/C:/Users/MinhHieu/Documents/NetBeansProjects/Project_1_School/src/BUS/CourseInstructorBLL.java</file>
+            <file>file:/C:/Users/MinhHieu/Documents/NetBeansProjects/Project_1_School/src/main/MainClass.java</file>
             <file>file:/C:/Users/MinhHieu/Documents/NetBeansProjects/Project_1_School/src/DAL/CourseDAL.java</file>
         </group>
     </open-files>
