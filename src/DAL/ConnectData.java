@@ -16,7 +16,7 @@ public class ConnectData {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String dbUrl = "jdbc:mysql://localhost:3306/school";
             String username = "root";
-            String password = "123456";
+            String password = "";
             conn = DriverManager.getConnection(dbUrl, username,password);
             return true;
             }catch(ClassNotFoundException | SQLException ex){

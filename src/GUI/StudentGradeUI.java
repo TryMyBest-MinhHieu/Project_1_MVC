@@ -1,34 +1,35 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package GUI;
 
 import BUS.StudentGradeBLL;
 import DTO.StudentGrade;
-import java.awt.Point;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 public class StudentGradeUI extends javax.swing.JFrame {
 
-    /**
-     * Creates new form OnlineCourseUI
-     */
     private StudentGradeBLL sgBLL = new StudentGradeBLL();
 
     private enum Status {
         ADD, UPDATE
     }
     private Status status;
+    private DefaultTableModel dtm = new DefaultTableModel() {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            // Chỉ cho phép chỉnh sửa ô trong cột cuối cùng (Grade)
+            return column == getColumnCount() - 1;
+        }
+    };
 
     public StudentGradeUI() {
         initComponents();
@@ -36,10 +37,68 @@ public class StudentGradeUI extends javax.swing.JFrame {
         loadCbxCourseID();
         loadCbxStudentID();
         AddSearchEvent();
+        UpdateGradeOnTableEvent();
+    }
+
+    private boolean CheckGrade(String grade) {
+        // Biểu thức chính quy kiểm tra số thực từ 0 đến 4
+        String regex = "^(?:[0-4](?:\\.\\d+)?|4(?:\\.0)?)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(grade);
+        if (!matcher.matches()) {
+            JOptionPane.showMessageDialog(null,
+                    "Grade is real number, range from about 0 to 4!",
+                    "Error",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        }
+        if (grade.length() > 4) {
+            JOptionPane.showMessageDialog(null,
+                    "Grade is invalid!",
+                    "Error",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    private void UpdateGradeOnTableEvent() {
+        dtm.addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                if (e.getType() == TableModelEvent.UPDATE) {
+                    int row = e.getFirstRow();
+                    int col = e.getColumn();
+                    if (row != -1 && col != -1) {
+                        String enrollmentId = dtm.getValueAt(row, 0).toString();
+                        String gradeString = dtm.getValueAt(row, col).toString();
+                        if (CheckGrade(gradeString)) {
+                            float grade = Float.parseFloat(gradeString);
+                            if (sgBLL.Update(enrollmentId, grade)) {
+                                JOptionPane.showMessageDialog(null,
+                                        "Update Success!",
+                                        "Notification",
+                                        JOptionPane.INFORMATION_MESSAGE);
+                                btnClear.doClick();
+                            } else {
+                                JOptionPane.showMessageDialog(null,
+                                        "Update Fail!",
+                                        "Notification",
+                                        JOptionPane.INFORMATION_MESSAGE);
+                            }
+                            System.out.println(row + " " + col);
+                        }
+                        loadTable();
+                    }
+                }
+            }
+        }
+        );
     }
 
     private void SearchTextChange() {
-        DefaultTableModel dtm = new DefaultTableModel();
+        dtm.setRowCount(0);
+        dtm.setColumnCount(0);
         dtm.addColumn("Enrollment ID");
         dtm.addColumn("Course ID");
         dtm.addColumn("Title");
@@ -52,10 +111,17 @@ public class StudentGradeUI extends javax.swing.JFrame {
         list = sgBLL.searchStudentGrade(txtSearch.getText());
         for (int i = 0; i < list.size(); i++) {
             StudentGrade oc = list.get(i);
-            dtm.addRow(new Object[]{
-                oc.getEnrollmentID(), oc.getCourseID(), oc.getTitle(),
-                oc.getStudentID(), oc.getFirstName(), oc.getLastName(), oc.getGrade()
-            });
+            if (oc.getGrade() == -1) {
+                dtm.addRow(new Object[]{
+                    oc.getEnrollmentID(), oc.getCourseID(), oc.getTitle(),
+                    oc.getStudentID(), oc.getFirstName(), oc.getLastName()
+                });
+            } else {
+                dtm.addRow(new Object[]{
+                    oc.getEnrollmentID(), oc.getCourseID(), oc.getTitle(),
+                    oc.getStudentID(), oc.getFirstName(), oc.getLastName(), oc.getGrade()
+                });
+            }
         }
     }
 
@@ -79,7 +145,8 @@ public class StudentGradeUI extends javax.swing.JFrame {
     }
 
     private void loadTable() {
-        DefaultTableModel dtm = new DefaultTableModel();
+        dtm.setRowCount(0);
+        dtm.setColumnCount(0);
         dtm.addColumn("Enrollment ID");
         dtm.addColumn("Course ID");
         dtm.addColumn("Title");
@@ -92,12 +159,18 @@ public class StudentGradeUI extends javax.swing.JFrame {
         list = sgBLL.getAllStudentGrade();
         for (int i = 0; i < list.size(); i++) {
             StudentGrade oc = list.get(i);
-            dtm.addRow(new Object[]{
-                oc.getEnrollmentID(), oc.getCourseID(), oc.getTitle(),
-                oc.getStudentID(), oc.getFirstName(), oc.getLastName(), oc.getGrade()
-            });
+            if (oc.getGrade() == -1) {
+                dtm.addRow(new Object[]{
+                    oc.getEnrollmentID(), oc.getCourseID(), oc.getTitle(),
+                    oc.getStudentID(), oc.getFirstName(), oc.getLastName()
+                });
+            } else {
+                dtm.addRow(new Object[]{
+                    oc.getEnrollmentID(), oc.getCourseID(), oc.getTitle(),
+                    oc.getStudentID(), oc.getFirstName(), oc.getLastName(), oc.getGrade()
+                });
+            }
         }
-
     }
 
     private void loadCbxCourseID() {
@@ -134,29 +207,10 @@ public class StudentGradeUI extends javax.swing.JFrame {
                     JOptionPane.INFORMATION_MESSAGE);
             return false;
         }
-        if (txtGrade.getText().equals("")) {
-            JOptionPane.showMessageDialog(null,
-                    "Please enter Grade!",
-                    "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
-            return false;
-        }
-        // Biểu thức chính quy kiểm tra số thực từ 0 đến 10
-        String regex = "^(?:[0-4](?:\\.\\d+)?|4(?:\\.0)?)$";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(txtGrade.getText());
-        if (!matcher.matches()) {
-            JOptionPane.showMessageDialog(null,
-                    "Grade is real number, range from about 0 to 4!",
-                    "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
-            return false;
-        }
-        if (txtGrade.getText().length() > 4) {
-            JOptionPane.showMessageDialog(null,
-                    "Grade is invalid!",
-                    "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
+        if (!txtGrade.getText().equals("")) {
+            if (CheckGrade(txtGrade.getText())) {
+                return true;
+            }
             return false;
         }
         return true;
@@ -473,40 +527,43 @@ public class StudentGradeUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        status = Status.ADD;
-        btnAdd.setEnabled(false);
-        btnUpdate.setEnabled(false);
-        btnClear.setEnabled(false);
-        tableStudentGrade.setEnabled(false);
-        btnSave.setEnabled(true);
-        btnCancel.setEnabled(true);
-        cbxStudentID.setEnabled(true);
-        cbxCourseID.setEnabled(true);
-        txtGrade.setEnabled(true);
-        txtGrade.setText("");
-        txtSearch.setText("");
-        txtFirstName.setText("");
-        txtLastName.setText("");
-        txtTitle.setText("");
-        cbxCourseID.setSelectedIndex(-1);
-        cbxStudentID.setSelectedIndex(-1);
-        loadTable();
-        int nextId = sgBLL.GetMaxId() + 1;
-        txtEnrollmentID.setText("" + nextId);
+        StudentCourseUI newFrame = new StudentCourseUI();
+        newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        newFrame.setVisible(true);
+//        status = Status.ADD;
+//        btnAdd.setEnabled(false);
+//        btnUpdate.setEnabled(false);
+//        btnClear.setEnabled(false);
+//        tableStudentGrade.setEnabled(false);
+//        btnSave.setEnabled(true);
+//        btnCancel.setEnabled(true);
+//        cbxStudentID.setEnabled(true);
+//        cbxCourseID.setEnabled(true);
+//        txtGrade.setEnabled(true);
+//        txtGrade.setText("");
+//        txtSearch.setText("");
+//        txtFirstName.setText("");
+//        txtLastName.setText("");
+//        txtTitle.setText("");
+//        cbxCourseID.setSelectedIndex(-1);
+//        cbxStudentID.setSelectedIndex(-1);
+//        loadTable();
+//        int nextId = sgBLL.GetMaxId() + 1;
+//        txtEnrollmentID.setText("" + nextId);
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void tableStudentGradeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStudentGradeMouseClicked
-        int i = tableStudentGrade.getSelectedRow();
-        if (i >= 0) {
-            TableModel model = tableStudentGrade.getModel();
-            txtEnrollmentID.setText(model.getValueAt(i, 0).toString());
-            cbxCourseID.setSelectedItem(model.getValueAt(i, 1).toString());
-            txtTitle.setText(model.getValueAt(i, 2).toString());
-            cbxStudentID.setSelectedItem(model.getValueAt(i, 3).toString());
-            txtFirstName.setText(model.getValueAt(i, 4).toString());
-            txtLastName.setText(model.getValueAt(i, 5).toString());
-            txtGrade.setText(model.getValueAt(i, 6).toString());
-        }
+//        int i = tableStudentGrade.getSelectedRow();
+//        if (i >= 0) {
+//            TableModel model = tableStudentGrade.getModel();
+//            txtEnrollmentID.setText(model.getValueAt(i, 0).toString());
+//            cbxCourseID.setSelectedItem(model.getValueAt(i, 1).toString());
+//            txtTitle.setText(model.getValueAt(i, 2).toString());
+//            cbxStudentID.setSelectedItem(model.getValueAt(i, 3).toString());
+//            txtFirstName.setText(model.getValueAt(i, 4).toString());
+//            txtLastName.setText(model.getValueAt(i, 5).toString());
+//            txtGrade.setText(model.getValueAt(i, 6).toString());
+//        }
     }//GEN-LAST:event_tableStudentGradeMouseClicked
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
@@ -569,10 +626,10 @@ public class StudentGradeUI extends javax.swing.JFrame {
                 String enrollmentId = txtEnrollmentID.getText();
                 String courseId = (String) cbxCourseID.getSelectedItem();
                 String studentId = (String) cbxStudentID.getSelectedItem();
-                float grade = Float.parseFloat(txtGrade.getText());
+                float grade = (txtGrade.getText().equals("")) ? 0 : Float.parseFloat(txtGrade.getText());
                 if (sgBLL.GradeIsExist(courseId, studentId)) {
                     JOptionPane.showMessageDialog(null,
-                            "Students already have a grade for this course!",
+                            "Students already add for this course!",
                             "Error",
                             JOptionPane.INFORMATION_MESSAGE);
                 } else {
@@ -641,16 +698,24 @@ public class StudentGradeUI extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(StudentGradeUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(StudentGradeUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(StudentGradeUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(StudentGradeUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(StudentGradeUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(StudentGradeUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(StudentGradeUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(StudentGradeUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
