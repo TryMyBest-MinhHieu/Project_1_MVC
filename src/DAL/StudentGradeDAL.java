@@ -67,7 +67,7 @@ public class StudentGradeDAL extends ConnectData {
                 ResultSet rs = stm.executeQuery(sql);
                 while (rs.next()) {
                     Person person = new Person();
-                    person.setPersionID(rs.getInt("PersonID"));
+                    person.setPersonID(rs.getInt("PersonID"));
                     person.setFirstname(rs.getString("Firstname"));
                     person.setLastname(rs.getString("Lastname"));
                     person.setEnrollmentDate(rs.getDate("EnrollmentDate"));

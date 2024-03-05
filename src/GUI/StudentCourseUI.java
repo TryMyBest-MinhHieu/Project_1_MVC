@@ -87,8 +87,8 @@ public class StudentCourseUI extends javax.swing.JFrame {
         for (int i = 0; i < list.size(); i++) {
             Person person = list.get(i);
             dtm.addRow(new Object[]{
-                person.getPersionID(), person.getFirstname(), person.getLastname(),
-                person.getEnrollmentDate(), sgBLL.GradeIsExist((String) cbxCourseID.getSelectedItem(), Integer.toString(person.getPersionID()))
+                person.getPersonID(), person.getFirstname(), person.getLastname(),
+                person.getEnrollmentDate(), sgBLL.GradeIsExist((String) cbxCourseID.getSelectedItem(), Integer.toString(person.getPersonID()))
             });
         }
     }
