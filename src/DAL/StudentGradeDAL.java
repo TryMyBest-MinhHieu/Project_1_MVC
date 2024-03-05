@@ -52,6 +52,26 @@ public class StudentGradeDAL extends ConnectData {
         return list;
     }
 
+    public boolean Update(String enrollmentId, float grade) {
+        if (OpenConnection()) {
+            String insertSql = "UPDATE studentgrade"
+                    + " SET Grade = ?"
+                    + " WHERE EnrollmentID = ?;";
+            try (PreparedStatement insertStatement = conn.prepareStatement(insertSql)) {
+                insertStatement.setFloat(1, grade);
+                insertStatement.setString(2, enrollmentId);
+                if (insertStatement.executeUpdate() > 0) {
+                    return true;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                CloseConnection();
+            }
+        }
+        return false;
+    }
+
     public boolean Add(String enrollmentId, String courseId, String studentId, float grade) {
         if (OpenConnection()) {
             String insertSql = "INSERT INTO "
@@ -73,7 +93,7 @@ public class StudentGradeDAL extends ConnectData {
         }
         return false;
     }
-    
+
     public boolean GradeIsExist(String courseId, String studentId) {
         if (OpenConnection()) {
             try {

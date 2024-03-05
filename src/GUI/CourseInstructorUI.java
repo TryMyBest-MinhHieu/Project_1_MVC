@@ -5,82 +5,42 @@
 package GUI;
 
 import BUS.CourseInstructorBLL;
-import BUS.OnlineCourseBLL;
 import DTO.CourseInstructor;
 import DTO.CourseInstructorInfo;
-import DTO.OnlineCourse;
 import java.awt.Point;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import DTO.Course;
+import DTO.Person;
+import java.awt.Color;
+import java.awt.Component;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
 
 public class CourseInstructorUI extends javax.swing.JFrame {
 
     /**
      * Creates new form OnlineCourseUI
      */
-    private CourseInstructorBLL ciBLL = new CourseInstructorBLL();
+    private CourseInstructorBLL ciBLL;
+    CourseComboboxModel courseCbxModel;
+    PersonComboboxModel personCbxModel;
+    DefaultListCellRenderer renderer;
+
     public CourseInstructorUI() {
+        ciBLL = new CourseInstructorBLL();
         initComponents();
-        loadTable();
-        loadCbxSearch();
-        loadCbxCourseID();
-        loadCbxPersonID();
-    }
-    
-    private void loadTable(){
-        DefaultTableModel dtm = new DefaultTableModel();
-        dtm.addColumn("CourseID");
-        dtm.addColumn("PersonID");
-        tableCourseInstructor.setModel(dtm);
-        ArrayList<CourseInstructor> list = new ArrayList<>();
-        list = ciBLL.getAllCourseInstructor();
-        for(int i = 0;i< list.size();i++){
-            CourseInstructor ci = list.get(i);
-            dtm.addRow(new Object[]{
-                ci.getCourseID(), ci.getPersonID()
-            });
-        }
-        
+        loadUi();
+
     }
 
-    private void loadTableSearch(String column, String data){
-        DefaultTableModel dtm = new DefaultTableModel();
-        dtm.addColumn("CourseID");
-        dtm.addColumn("PersonID");
-        tableCourseInstructor.setModel(dtm);
-        ArrayList<CourseInstructor> list = new ArrayList<>();
-        list = ciBLL.searchCourseInstructor(column, data);
-        for(int i = 0;i< list.size();i++){
-            CourseInstructor ci = list.get(i);
-            dtm.addRow(new Object[]{
-                ci.getCourseID(), ci.getPersonID()
-            });
-        }
+    private void loadUi() {
     }
-    
-    private void loadCbxSearch(){
-        cbxSearch.removeAllItems();
-        cbxSearch.addItem("CourseID");
-        cbxSearch.addItem("PersonID");
-    }
-    
-    private void loadCbxCourseID(){
-        cbxCourseID.removeAllItems();
-        for(int i=0;i<ciBLL.getAllCourseID().size();i++){
-            cbxCourseID.addItem(ciBLL.getAllCourseID().get(i).toString());
-        }
-    }
-    
-    private void loadCbxPersonID(){
-        cbxPersonID.removeAllItems();
-        for(int i =0;i<ciBLL.getAllPersonID().size();i++){
-            cbxPersonID.addItem(ciBLL.getAllPersonID().get(i).toString());
-        }
-    }
-    
+
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -90,26 +50,39 @@ public class CourseInstructorUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        label1 = new java.awt.Label();
+        jInternalFrame1 = new javax.swing.JInternalFrame();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        btnExit = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableCourseInstructor = new javax.swing.JTable();
-        btnAdd = new javax.swing.JButton();
+        btnAssign = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
-        btnSearch = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
-        btnExit = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        cbxPersonID = new javax.swing.JComboBox<>();
         txtSearch = new javax.swing.JTextField();
-        cbxSearch = new javax.swing.JComboBox<>();
-        cbxCourseID = new javax.swing.JComboBox<>();
-        cbxCourseTitle = new javax.swing.JComboBox<>();
-        cbxPersonName = new javax.swing.JComboBox<>();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+
+        label1.setText("label1");
+
+        jInternalFrame1.setVisible(true);
+
+        javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(jInternalFrame1.getContentPane());
+        jInternalFrame1.getContentPane().setLayout(jInternalFrame1Layout);
+        jInternalFrame1Layout.setHorizontalGroup(
+            jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jInternalFrame1Layout.setVerticalGroup(
+            jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -121,28 +94,37 @@ public class CourseInstructorUI extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Course Instructor");
 
+        btnExit.setBackground(new java.awt.Color(153, 153, 153));
+        btnExit.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        btnExit.setForeground(new java.awt.Color(255, 255, 255));
+        btnExit.setText("Exit");
+        btnExit.setBorderPainted(false);
+        btnExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExitActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(btnExit)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addGap(255, 255, 255))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(jLabel1)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(btnExit))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel2.setText("Course");
-
-        jLabel3.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel3.setText("Person");
 
         tableCourseInstructor.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -165,14 +147,14 @@ public class CourseInstructorUI extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tableCourseInstructor);
 
-        btnAdd.setBackground(new java.awt.Color(255, 0, 0));
-        btnAdd.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        btnAdd.setForeground(new java.awt.Color(255, 255, 255));
-        btnAdd.setText("Add");
-        btnAdd.setBorderPainted(false);
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+        btnAssign.setBackground(new java.awt.Color(255, 0, 0));
+        btnAssign.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        btnAssign.setForeground(new java.awt.Color(255, 255, 255));
+        btnAssign.setText("Assign");
+        btnAssign.setBorderPainted(false);
+        btnAssign.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
+                btnAssignActionPerformed(evt);
             }
         });
 
@@ -198,17 +180,6 @@ public class CourseInstructorUI extends javax.swing.JFrame {
             }
         });
 
-        btnSearch.setBackground(new java.awt.Color(255, 0, 0));
-        btnSearch.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        btnSearch.setForeground(new java.awt.Color(255, 255, 255));
-        btnSearch.setText("Search");
-        btnSearch.setBorderPainted(false);
-        btnSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSearchActionPerformed(evt);
-            }
-        });
-
         btnClear.setBackground(new java.awt.Color(255, 0, 0));
         btnClear.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         btnClear.setForeground(new java.awt.Color(255, 255, 255));
@@ -220,31 +191,29 @@ public class CourseInstructorUI extends javax.swing.JFrame {
             }
         });
 
-        btnExit.setBackground(new java.awt.Color(255, 0, 0));
-        btnExit.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        btnExit.setForeground(new java.awt.Color(255, 255, 255));
-        btnExit.setText("Exit");
-        btnExit.setBorderPainted(false);
-        btnExit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExitActionPerformed(evt);
-            }
-        });
-
         jLabel4.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel4.setText("Search");
 
-        cbxPersonID.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-
         txtSearch.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
 
-        cbxSearch.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jLabel5.setText("Instructor");
 
-        cbxCourseID.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jLabel6.setText("Course");
 
-        cbxCourseTitle.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
 
-        cbxPersonName.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+            }
+        ));
+        jScrollPane2.setViewportView(jTable1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -253,86 +222,56 @@ public class CourseInstructorUI extends javax.swing.JFrame {
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(btnAssign, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnUpdate)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(48, 48, 48)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 14, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(cbxPersonID, 0, 122, Short.MAX_VALUE)
-                            .addComponent(cbxCourseID, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbxCourseTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cbxPersonName, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(btnExit, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtSearch)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addGap(18, 18, 18)
-                        .addComponent(cbxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnClear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnUpdate))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnAdd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnDelete, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(23, Short.MAX_VALUE))
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel2)
-                        .addComponent(cbxCourseID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cbxCourseTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel4)
-                        .addComponent(cbxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel3)
-                        .addComponent(cbxPersonID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cbxPersonName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAssign)
+                    .addComponent(btnUpdate)
+                    .addComponent(btnClear)
+                    .addComponent(btnDelete)
+                    .addComponent(jLabel4)
                     .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnSearch)
-                        .addGap(61, 61, 61)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnUpdate)
-                            .addComponent(btnAdd))
-                        .addGap(36, 36, 36)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnClear)
-                            .addComponent(btnDelete))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
-                        .addComponent(btnExit)))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -343,86 +282,29 @@ public class CourseInstructorUI extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
-        int personID = Integer.parseInt(cbxPersonID.getSelectedItem().toString());
-        
-        CourseInstructor ci = new CourseInstructor(courseID, personID);
-        if(ciBLL.checkCourseInstructorID(courseID, personID)==false){
-            if(ciBLL.addCourseInstructor(ci)){
-                JOptionPane.showMessageDialog(this, "Add Success");
-                loadTable();
-            } else{
-                JOptionPane.showMessageDialog(this, "Add Fail");
-            }
-        } else{
-            JOptionPane.showMessageDialog(this, "CourseID Exist");
-        }
-    }//GEN-LAST:event_btnAddActionPerformed
+    private void btnAssignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAssignActionPerformed
+       
+    }//GEN-LAST:event_btnAssignActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        int courseID = Integer.parseInt(cbxPersonID.getSelectedItem().toString());
-        int personID = Integer.parseInt(cbxPersonID.getSelectedItem().toString());
-        if(ciBLL.checkCourseInstructorID(courseID, personID) == false){
-            JOptionPane.showMessageDialog(this, "CourseID doesnt exist");
-        } else{
-            if(ciBLL.deleteCourseInstructor(courseID, personID)){
-                JOptionPane.showMessageDialog(this, "Delete Success");
-                loadTable();
-            } else {
-                JOptionPane.showMessageDialog(this, "Delete Fail");
-            }
-        }
+       
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void tableCourseInstructorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableCourseInstructorMouseClicked
-        int i = tableCourseInstructor.getSelectedRow();
-        CourseInstructorInfo cii = new CourseInstructorInfo();
-        if(i>=0){
-            TableModel model = tableCourseInstructor.getModel();
-            cbxCourseID.setSelectedItem(model.getValueAt(i, 0).toString());
-            cbxPersonID.setSelectedItem(model.getValueAt(i, 1).toString());
-        }
+       
     }//GEN-LAST:event_tableCourseInstructorMouseClicked
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
-        int personID = Integer.parseInt(cbxPersonID.getSelectedItem().toString());
-        CourseInstructor ci = new CourseInstructor(courseID, personID);
-        if (ciBLL.updateCourseInstructor(ci)) {
-            JOptionPane.showMessageDialog(this, "Update Success");
-            loadTable();
-        } else {
-            JOptionPane.showMessageDialog(this, "Update Fail");
-        }
+
     }//GEN-LAST:event_btnUpdateActionPerformed
 
-    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        String data = txtSearch.getText();
-        if(cbxSearch.getSelectedIndex() == 0){
-            loadTableSearch("CourseID", data);
-        } else if(cbxSearch.getSelectedIndex() == 1){
-            loadTableSearch("PersonID", data);
-        }
-    }//GEN-LAST:event_btnSearchActionPerformed
-
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
-    
         txtSearch.setText("");
-        loadTable();
+
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void tableCourseInstructorMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableCourseInstructorMousePressed
-        int i = tableCourseInstructor.getSelectedRow();
-        JTable table =(JTable) evt.getSource();
-        Point point = evt.getPoint();
-        if(i>=0 && evt.getClickCount()==2){
-            TableModel model = tableCourseInstructor.getModel();
-            int courseID = Integer.parseInt(model.getValueAt(i, 0).toString());
-            int personID = Integer.parseInt(model.getValueAt(i, 1).toString());
-            CourseInstructor ci = new CourseInstructor(courseID, personID);
-            new CourseInstructorDetail(ci).setVisible(true);
-        }
+
     }//GEN-LAST:event_tableCourseInstructorMousePressed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
@@ -432,8 +314,6 @@ public class CourseInstructorUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnExitActionPerformed
 
-    
-    
     /**
      * @param args the command line arguments
      */
@@ -473,25 +353,25 @@ public class CourseInstructorUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnAssign;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExit;
-    private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnUpdate;
-    private javax.swing.JComboBox<String> cbxCourseID;
-    private javax.swing.JComboBox<String> cbxCourseTitle;
-    private javax.swing.JComboBox<String> cbxPersonID;
-    private javax.swing.JComboBox<String> cbxPersonName;
-    private javax.swing.JComboBox<String> cbxSearch;
+    private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTable1;
+    private java.awt.Label label1;
     private javax.swing.JTable tableCourseInstructor;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
+
+    
 }

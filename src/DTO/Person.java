@@ -60,4 +60,11 @@ public class Person {
     public void setEnrollmentDate(Date EnrollmentDate) {
         this.enrollmentDate = EnrollmentDate;
     }  
+
+    @Override
+    public String toString() {
+        return this.getFirstname()+ " " + this.getLastname();
+    }
+    
+    
 }

@@ -4,6 +4,7 @@
  */
 package DAL;
 
+import DTO.Course;
 import DTO.CourseInstructor;
 import DTO.CourseInstructorInfo;
 import java.sql.PreparedStatement;
@@ -37,21 +38,36 @@ public class CourseInstructorDAL extends ConnectData{
         return check;
     }
     
-    public ArrayList<CourseInstructor> getAllCourseInstructor(){
-        ArrayList<CourseInstructor> list = new ArrayList<>();
+    public ArrayList<CourseInstructorInfo> getAllCourseInstructorInfo(){
+        ArrayList<CourseInstructorInfo> list = new ArrayList<>();
+        
         if(OpenConnection()){
             try {
-                String sql = "select * from CourseInstructor";
+                String sql = "SELECT c.Title, "
+                        + "CONCAT(p.Firstname, ' ', p.Lastname) AS Fullname,"
+                        + "c.Credits,"
+                        + "ci.CourseID,"
+                        + "ci.PersonID "
+                        + "FROM courseinstructor ci "
+                        + "JOIN course c ON ci.CourseID = c.CourseID "
+                        + "JOIN person p ON ci.PersonID = p.PersonID ";
+                
                 Statement stm = conn.createStatement();
                 ResultSet rs = stm.executeQuery(sql);
                 while(rs.next()){
-                    CourseInstructor ci = new CourseInstructor(rs.getInt("CourseID"),rs.getInt("PersonID"));
+                    CourseInstructorInfo ci = new CourseInstructorInfo(
+                            rs.getString("Title"),
+                            rs.getInt("CourseID"),
+                            rs.getInt("Credits"),
+                            rs.getInt("PersonID"),
+                            rs.getString("Fullname"));
                     list.add(ci);
                     
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(CourseInstructorDAL.class.getName()).log(Level.SEVERE, null, ex);
             } finally{
+                
                 CloseConnection();
             }
             
@@ -60,26 +76,6 @@ public class CourseInstructorDAL extends ConnectData{
         return list;
     }
     
-    public ArrayList<Integer> getAllCourseID(){
-        ArrayList<Integer> list = new ArrayList<>();
-        if(OpenConnection()){
-            try {
-                String sql = "select CourseID from Course";
-                Statement stm = conn.createStatement();
-                ResultSet rs = stm.executeQuery(sql);
-                while(rs.next()){
-                    list.add(Integer.valueOf(rs.getInt("CourseID")));
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(CourseInstructorDAL.class.getName()).log(Level.SEVERE, null, ex);
-            } finally{
-                CloseConnection();
-            }
-        }
-        
-        
-        return list;
-    }
     
     public ArrayList<CourseInstructorInfo> getCIInfo(CourseInstructor c) {
         ArrayList<CourseInstructorInfo> ciiList = new ArrayList<>();
@@ -115,26 +111,7 @@ public class CourseInstructorDAL extends ConnectData{
 
         return ciiList;
     }
-    
-    public ArrayList<Integer> getAllPersonID(){
-        ArrayList<Integer> list = new ArrayList<>();
-        if(OpenConnection()){
-            try {
-                String sql = "select PersonID from Person where HireDate is not NULL";
-                Statement stm = conn.createStatement();
-                ResultSet rs = stm.executeQuery(sql);
-                while(rs.next()){
-                    list.add(Integer.valueOf(rs.getInt("PersonID")));
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(CourseInstructorDAL.class.getName()).log(Level.SEVERE, null, ex);
-            } finally{
-                CloseConnection();
-            }
-        }
-        return list;
-    }
-    
+   
     public boolean addCourseInstructor(CourseInstructor ci){
         boolean check = false;
         if(OpenConnection()){
@@ -221,5 +198,31 @@ public class CourseInstructorDAL extends ConnectData{
         }
         
         return list;
+    }
+    
+    public ArrayList<Course> GetAllListCourse(){
+        ArrayList<Course> courseList = new ArrayList<Course>();
+        String sql = "SELECT * FROM course";
+        if (OpenConnection()) {
+            try {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql);
+                while (rs.next()) {
+                    Course cs = new Course();
+                    cs.setCourseID(rs.getInt("CourseID"));
+                    cs.setTitle(rs.getString("Title"));
+                    cs.setCredits(rs.getInt("Credits"));
+                    cs.setDepartmentID(rs.getInt("DepartmentID"));
+                    courseList.add(cs);
+                }
+            } catch (SQLException ex) {
+                System.out.println("khong tim thay danh sach" + ex);
+            } finally {
+                CloseConnection();
+            }
+        } else {
+            System.out.println("Kết nối không thành công.");
+        }        
+        return courseList;        
     }
 }

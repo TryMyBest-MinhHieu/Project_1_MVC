@@ -493,21 +493,6 @@ public class StudentGradeUI extends javax.swing.JFrame {
         loadTable();
         int nextId = sgBLL.GetMaxId() + 1;
         txtEnrollmentID.setText("" + nextId);
-//        int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
-//        int studentID = Integer.parseInt(cbxStudentID.getSelectedItem().toString());
-//        double grade = Double.parseDouble(txtGrade.getText());
-//        
-//        StudentGrade sg = new StudentGrade(0, courseID, studentID, grade);
-//
-//        if (txtGrade.getText().trim().equals("")) {
-//            JOptionPane.showMessageDialog(this, "");
-//        } else if (sgBLL.addStudentGrade(sg)) {
-//            JOptionPane.showMessageDialog(this, "Add Success");
-//            loadTable();
-//        } else {
-//            JOptionPane.showMessageDialog(this, "Add Fail");
-//        }
-
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void tableStudentGradeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStudentGradeMouseClicked
@@ -526,27 +511,22 @@ public class StudentGradeUI extends javax.swing.JFrame {
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         status = Status.UPDATE;
-        btnAdd.setEnabled(false);
-        btnUpdate.setEnabled(false);
-        btnClear.setEnabled(false);
-        btnSave.setEnabled(true);
-        btnCancel.setEnabled(true);
-
-//        int courseID = Integer.parseInt(cbxCourseID.getSelectedItem().toString());
-//        int studentID = Integer.parseInt(cbxStudentID.getSelectedItem().toString());
-//        int enrollmentID = Integer.parseInt(txtEnrollmentID.getText());
-//        double grade = Double.parseDouble(txtGrade.getText());
-//        
-//        StudentGrade sg = new StudentGrade(enrollmentID, courseID, studentID, grade);
-//        if(txtEnrollmentID.getText().trim().equals("")&& txtGrade.getText().trim().equals("")){
-//            JOptionPane.showMessageDialog(this, "Please select row to update");
-//        } else 
-//            if(sgBLL.updateStudentGrade(sg)){
-//                JOptionPane.showMessageDialog(this, "Update Success");
-//                loadTable();
-//            } else{
-//                JOptionPane.showMessageDialog(this, "Update Fail");
-//            }
+        int selectedRow = tableStudentGrade.getSelectedRow();
+        if (selectedRow >= 0) {
+            btnAdd.setEnabled(false);
+            btnUpdate.setEnabled(false);
+            btnClear.setEnabled(false);
+            tableStudentGrade.setEnabled(false);
+            btnSave.setEnabled(true);
+            btnCancel.setEnabled(true);
+            txtGrade.setEnabled(true);
+            txtSearch.setEnabled(false);
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "Please choose a record!",
+                    "Error",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
@@ -571,6 +551,7 @@ public class StudentGradeUI extends javax.swing.JFrame {
         cbxStudentID.setEnabled(false);
         cbxCourseID.setEnabled(false);
         txtGrade.setEnabled(false);
+        txtSearch.setEnabled(true);
         txtEnrollmentID.setText("");
         txtGrade.setText("");
         txtSearch.setText("");
@@ -583,26 +564,45 @@ public class StudentGradeUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        if (CheckInput()) {
-            String enrollmentId = txtEnrollmentID.getText();
-            String courseId = (String) cbxCourseID.getSelectedItem();
-            String studentId = (String) cbxStudentID.getSelectedItem();
-            float grade = Float.parseFloat(txtGrade.getText());
-            if (sgBLL.GradeIsExist(courseId, studentId)) {
-                JOptionPane.showMessageDialog(null,
-                        "Students already have a grade for this course!",
-                        "Error",
-                        JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                if (sgBLL.Add(enrollmentId, courseId, studentId, grade)) {
+        if (status == Status.ADD) {
+            if (CheckInput()) {
+                String enrollmentId = txtEnrollmentID.getText();
+                String courseId = (String) cbxCourseID.getSelectedItem();
+                String studentId = (String) cbxStudentID.getSelectedItem();
+                float grade = Float.parseFloat(txtGrade.getText());
+                if (sgBLL.GradeIsExist(courseId, studentId)) {
                     JOptionPane.showMessageDialog(null,
-                            "Add Success!",
+                            "Students already have a grade for this course!",
                             "Error",
                             JOptionPane.INFORMATION_MESSAGE);
-                    loadTable();
+                } else {
+                    if (sgBLL.Add(enrollmentId, courseId, studentId, grade)) {
+                        JOptionPane.showMessageDialog(null,
+                                "Add Success!",
+                                "Error",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        btnCancel.doClick();
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Add Fail!",
+                                "Error",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        } else if (status == Status.UPDATE) {
+            if (CheckInput()) {
+                String enrollmentId = txtEnrollmentID.getText();
+                float grade = Float.parseFloat(txtGrade.getText());
+                if (sgBLL.Update(enrollmentId, grade)) {
+                    JOptionPane.showMessageDialog(null,
+                            "Update Success!",
+                            "Error",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    btnCancel.doClick();
                 } else {
                     JOptionPane.showMessageDialog(null,
-                            "Add Fail!",
+                            "Update Fail!",
                             "Error",
                             JOptionPane.INFORMATION_MESSAGE);
                 }

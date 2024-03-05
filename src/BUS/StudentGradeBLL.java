@@ -15,6 +15,10 @@ public class StudentGradeBLL {
         return sgDAL.getAllStudentGrade();
     }
     
+    public boolean Update(String enrollmentId, float grade){
+        return sgDAL.Update(enrollmentId, grade);
+    }
+    
     public boolean Add(String enrollmentId, String courseId, String studentId, float grade){
         return sgDAL.Add(enrollmentId, courseId, studentId, grade);
     }

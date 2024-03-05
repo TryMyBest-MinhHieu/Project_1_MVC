@@ -10,21 +10,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//    public ArrayList<String> getAllCourseTitle(){
-//        return cDAL.getAllCourseTitle();
-//    }
-//    
-//    public ArrayList<CourseInfo> getCourseInfo(){
-//        return cDAL.getAllCourseInfo();
-//    }
-//    
-//    public int getCourseIDByTitle(String title){
-//        return cDAL.getCourseIDByTitle(title);
-//    }
-//    
-//    public String getTitleByCourseID(int id){
-//        return cDAL.getTitleByCourseID(id);
-//    }
+
 public class OnsiteCourseDAL extends ConnectData{
 //    public ArrayList<OnsiteCourse> getAllOnsiteCourse(){
 //        ArrayList<OnsiteCourse> list = new ArrayList<>();
