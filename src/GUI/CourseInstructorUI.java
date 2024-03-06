@@ -28,7 +28,12 @@ public class CourseInstructorUI extends javax.swing.JFrame {
     }
 
     private void loadTableCourseInstructor() {
-         dtm = new DefaultTableModel();
+         dtm = new DefaultTableModel() {
+             @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;//This causes all cells to be not editable
+            }
+         };
         dtm.addColumn("CourseID");
         dtm.addColumn("Title");
         dtm.addColumn("Credits");

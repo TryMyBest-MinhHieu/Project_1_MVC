@@ -25,12 +25,11 @@ import javax.swing.table.TableModel;
  */
 public class CourseChooserDialog extends javax.swing.JDialog {
 
-    
     public static final int RET_CANCEL = 0;
     public static final int RET_OK = 1;
-public static int COURSE_ID = -1;
+    public static int COURSE_ID = -1;
     private CourseInstructorBLL ciBLL;
-    
+
     public CourseChooserDialog(java.awt.Frame parent, boolean modal, CourseInstructorBLL ciBLL) {
         super(parent, modal);
         initComponents();
@@ -39,7 +38,7 @@ public static int COURSE_ID = -1;
 
         // Relative dialog to parent
         this.setLocationRelativeTo(parent);
-        
+
         // Close the dialog when Esc is pressed
         String cancelName = "cancel";
         InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
@@ -52,34 +51,38 @@ public static int COURSE_ID = -1;
         });
     }
 
-     private void loadTable() {
-        DefaultTableModel dtm = new DefaultTableModel();
+    private void loadTable() {
+        DefaultTableModel dtm = new DefaultTableModel() {
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;//This causes all cells to be not editable
+            }
+        };
         dtm.addColumn("CourseID");
-                dtm.addColumn("Title");
+        dtm.addColumn("Title");
         dtm.addColumn("Credits");
         dtm.addColumn("DepartmentID");
-        
+
         tblCourse.setModel(dtm);
         tblCourse.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ArrayList<Course> list = ciBLL.getCoursesCache();
-        
+
         for (int i = 0; i < list.size(); i++) {
             Course course = list.get(i);
             dtm.addRow(new Object[]{
-               course.getCourseID(),
+                course.getCourseID(),
                 course.getTitle(),
                 course.getCredits(),
                 course.getDepartmentID()
             });
         }
     }
-    
-    
+
     public int getReturnStatus() {
         return returnStatus;
     }
 
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -187,12 +190,11 @@ public static int COURSE_ID = -1;
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         int row = tblCourse.getSelectedRow();
-        if (row >=0) {
+        if (row >= 0) {
             TableModel model = tblCourse.getModel();
             COURSE_ID = Integer.parseInt(model.getValueAt(row, 0).toString());
             doClose(RET_OK);
-        }
-        else {
+        } else {
             JOptionPane.showConfirmDialog(this, "Vui Lòng chọn 1 giảng viên!!");
         }
     }//GEN-LAST:event_okButtonActionPerformed
@@ -207,14 +209,14 @@ public static int COURSE_ID = -1;
     private void closeDialog(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_closeDialog
         doClose(RET_CANCEL);
     }//GEN-LAST:event_closeDialog
-    
+
     private void doClose(int retStatus) {
         returnStatus = retStatus;
         setVisible(false);
         dispose();
     }
 
-  
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JLabel jLabel6;
