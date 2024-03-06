@@ -22,9 +22,23 @@ public class CourseBLL {
         return cDAL.getAllCourses();
     } 
     
+    public boolean checkCourseID(int courseID){
+        return cDAL.checkCourseID(courseID);
+    }
+    
     //Thêm
-    public void addCourse(Course course) {
-        cDAL.addCourse(course);
+    public boolean addCourse(Course course) {
+        return cDAL.addCourse(course);
+    }
+    
+    // Sửa
+    public boolean updateCourse(Course course){
+        return cDAL.updateCourse(course);
+    }
+    
+    //Xóa 
+    public boolean deleteCourse(int courseID){
+        return cDAL.deleteCourse(courseID);
     }
     
     // Lấy tên department
@@ -35,6 +49,11 @@ public class CourseBLL {
     //Lấy DepartmentID by Name
     public int getIDByName(String name){
         return cDAL.getIDByName(name);
+    }
+    
+    //Lấy Name by DeparmentID
+    public String getNameByID(int id){
+        return cDAL.getNameByID(id);
     }
 
 }

@@ -5,9 +5,12 @@ import BUS.CourseBLL;
 import DTO.Course;
 import DTO.OnlineCourse;
 import DTO.OnsiteCourse;
+import java.awt.Point;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 
 public class CourseUI extends javax.swing.JFrame {
@@ -17,10 +20,10 @@ public class CourseUI extends javax.swing.JFrame {
     public CourseUI() {
         initComponents();
         this.setLocationRelativeTo(null);
-        displayData();
+        loadTableCourse();
     }
 
-    private void displayData() {
+    public void loadTableCourse() {
         ArrayList<Course> courses = courseBLL.getAllCourses();
         // Tạo mô hình cho bảng
         DefaultTableModel model = new DefaultTableModel(
@@ -41,7 +44,7 @@ public class CourseUI extends javax.swing.JFrame {
             };
             model.addRow(rowData);
         }
-        jTable1.setModel(model);
+        Table.setModel(model);
     }
     
     @SuppressWarnings("unchecked")
@@ -49,7 +52,7 @@ public class CourseUI extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        Table = new javax.swing.JTable();
         btnAdd = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -59,7 +62,7 @@ public class CourseUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        Table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -70,7 +73,12 @@ public class CourseUI extends javax.swing.JFrame {
 
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        Table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                TableMousePressed(evt);
+            }
+        });
+        jScrollPane1.setViewportView(Table);
 
         btnAdd.setText("Add");
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -142,7 +150,7 @@ public class CourseUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        new addCourseUI().setVisible(true);
+        new addCourseUI(this).setVisible(true);
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -152,15 +160,40 @@ public class CourseUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    
+    private void TableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableMousePressed
+        int i = Table.getSelectedRow();
+        JTable table = (JTable) evt.getSource();
+        Point point = evt.getPoint();
+        if (i >= 0 && evt.getClickCount() == 2) {
+            TableModel model = Table.getModel();
+
+            int courseid = Integer.parseInt(model.getValueAt(i, 1).toString());
+            String title = model.getValueAt(i, 2).toString();
+            int credits = Integer.parseInt(model.getValueAt(i, 3).toString());
+            int departmentid = Integer.parseInt(model.getValueAt(i, 4).toString());
+
+            
+            String url = model.getValueAt(i, 5) != null ? model.getValueAt(i, 5).toString() : "";
+            String location = model.getValueAt(i, 6) != null ? model.getValueAt(i, 6).toString() : "";
+            String days = model.getValueAt(i, 7) != null ? model.getValueAt(i, 7).toString() : "";
+            String time = model.getValueAt(i, 8) != null ? model.getValueAt(i, 8).toString() : "";
+
+            updateCourseUI childForm = new updateCourseUI(this);
+            childForm.setParentData(courseid, title, credits, departmentid, url, location, days, time);
+            childForm.setVisible(true);
+        }
+    }//GEN-LAST:event_TableMousePressed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable Table;
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

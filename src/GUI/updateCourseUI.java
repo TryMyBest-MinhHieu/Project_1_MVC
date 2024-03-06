@@ -9,17 +9,42 @@ import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
-public class addCourseUI extends javax.swing.JFrame {
+public class updateCourseUI extends javax.swing.JFrame {
     
     CourseBLL courseBLL = new CourseBLL();
     private CourseUI parentGUI;
-    public addCourseUI(CourseUI parentGUI) {
-        this.parentGUI = parentGUI;
+    public updateCourseUI(CourseUI parentGUI) {
         initComponents();
-        setup();
+        this.parentGUI = parentGUI;
+        this.setLocationRelativeTo(null);
         loadCbxDepartment();
+        CourseUI cs = new CourseUI();
+        
     }
+    
+    public void setParentData(int courseid, String title, int credits, int departmentid, String url, String location, String days, String time){
+        txtCourseID.setText(String.valueOf(courseid));
+        txtTitle.setText(title);
+        txtCredit.setText(String.valueOf(credits));
+        txtDepartmentID.setSelectedItem(courseBLL.getNameByID(departmentid));
+        if (url == "") {
+            txtUrl.setEditable(false);
+            txtLocation.setText(location);
+            txtDay.setText(days);
+            txtTime.setText(time);
+            txtLocation.setEditable(true);
+            txtDay.setEditable(true);
+            txtTime.setEditable(true);
 
+        } else {
+            txtUrl.setText(url);
+            txtUrl.setEditable(true);
+            txtLocation.setEditable(false);
+            txtDay.setEditable(false);
+            txtTime.setEditable(false);
+        } 
+    }
+    
     ArrayList<String> nameList = courseBLL.getNameDepartment();
     public void loadCbxDepartment(){
         txtDepartmentID.removeAllItems();
@@ -28,15 +53,6 @@ public class addCourseUI extends javax.swing.JFrame {
         }
     }
     
-    public void setup(){
-        txtLocation.setVisible(false);
-        txtDay.setVisible(false);
-        txtTime.setVisible(false);
-        lbTime.setVisible(false);
-        lbLocation.setVisible(false);
-        lbDay.setVisible(false);
-        this.setLocationRelativeTo(null);
-    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -52,7 +68,6 @@ public class addCourseUI extends javax.swing.JFrame {
         txtDepartmentID = new javax.swing.JComboBox<>();
         lbUrl = new javax.swing.JLabel();
         txtUrl = new javax.swing.JTextField();
-        chbCourse = new javax.swing.JCheckBox();
         txtLocation = new javax.swing.JTextField();
         lbDay = new javax.swing.JLabel();
         txtDay = new javax.swing.JTextField();
@@ -66,6 +81,8 @@ public class addCourseUI extends javax.swing.JFrame {
 
         jLabel1.setText("CourseID");
 
+        txtCourseID.setEditable(false);
+
         jLabel2.setText("Title");
 
         jLabel3.setText("Credits");
@@ -75,13 +92,6 @@ public class addCourseUI extends javax.swing.JFrame {
         txtDepartmentID.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         lbUrl.setText("Url");
-
-        chbCourse.setText("Onsite Course");
-        chbCourse.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                chbCourseItemStateChanged(evt);
-            }
-        });
 
         lbDay.setText("Days");
 
@@ -110,11 +120,10 @@ public class addCourseUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(38, 38, 38)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(chbCourse, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel4)
@@ -161,9 +170,7 @@ public class addCourseUI extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(txtDepartmentID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(19, 19, 19)
-                .addComponent(chbCourse)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbUrl)
                     .addComponent(txtUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -179,11 +186,11 @@ public class addCourseUI extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbTime)
                     .addComponent(txtTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(24, 24, 24))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -192,28 +199,6 @@ public class addCourseUI extends javax.swing.JFrame {
     private void closeAddGUI(){
         dispose();
     }
-    private void chbCourseItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chbCourseItemStateChanged
-        if (evt.getStateChange() == ItemEvent.SELECTED) {
-            txtLocation.setVisible(true);
-            txtDay.setVisible(true);
-            txtTime.setVisible(true);
-            lbTime.setVisible(true);
-            lbLocation.setVisible(true);
-            lbDay.setVisible(true);
-            txtUrl.setVisible(false);
-            lbUrl.setVisible(false);
-        } else {
-            txtLocation.setVisible(false);
-            txtDay.setVisible(false);
-            txtTime.setVisible(false);
-            lbTime.setVisible(false);
-            lbLocation.setVisible(false);
-            lbDay.setVisible(false);
-            txtUrl.setVisible(true);
-            lbUrl.setVisible(true);
-        }
-    }//GEN-LAST:event_chbCourseItemStateChanged
-
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -223,42 +208,41 @@ public class addCourseUI extends javax.swing.JFrame {
         String title = txtTitle.getText();
         int credit = Integer.parseInt(txtCredit.getText());
         int departmentid = courseBLL.getIDByName((String) txtDepartmentID.getSelectedItem());
-        if (courseBLL.checkCourseID(courseid) == false) { // kiểm tra courseid tồn tại
-            // thêm Course onsite
-            if (chbCourse.isSelected()) {
+        //if (courseBLL.checkCourseID(courseid) == false) { // kiểm tra courseid tồn tại
+            // sửa Course onsite
+            if (txtUrl == null) {
                 String location = txtLocation.getText();
                 String day = txtDay.getText();
                 String time = txtTime.getText();
                 OnsiteCourse onsiteCourse = new OnsiteCourse(courseid, title, credit, departmentid, location, day, time);
-                if(courseBLL.addCourse(onsiteCourse)){
-                    JOptionPane.showMessageDialog(this, "Thêm thành công");
-                    parentGUI.loadTableCourse();
-                    closeAddGUI();
-                }else {
-                    JOptionPane.showMessageDialog(this, "Thêm thất bại");
-                }
-
-            } else { // Thêm Course online
-                String url = txtCourseID.getText();
-                OnlineCourse onlineCourse = new OnlineCourse(courseid, title, credit, departmentid, url);               
-                if (courseBLL.addCourse(onlineCourse)) {
-                    JOptionPane.showMessageDialog(this, "Thêm thành công");
+                if (courseBLL.updateCourse(onsiteCourse)) {
+                    JOptionPane.showMessageDialog(this, "Sửa thành công");
                     parentGUI.loadTableCourse();
                     closeAddGUI();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Thêm thất bại");
+                    JOptionPane.showMessageDialog(this, "Sửa thất bại");
+                }
+
+            } else { // sửa Course online
+                String url = txtCourseID.getText();
+                OnlineCourse onlineCourse = new OnlineCourse(courseid, title, credit, departmentid, url);
+                if (courseBLL.updateCourse(onlineCourse)) {
+                    JOptionPane.showMessageDialog(this, "Sửa thành công");
+                    parentGUI.loadTableCourse();
+                    closeAddGUI();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Sửa thất bại");
                 }
             }
-        }else{
-            JOptionPane.showMessageDialog(this, "Course ID đã tồn tại");
-            return;
-        }
+        //} else {
+        //    JOptionPane.showMessageDialog(this, "Course ID đã tồn tại");
+        //    return;
+        //}
     }//GEN-LAST:event_jButton1ActionPerformed
 
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox chbCourse;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;

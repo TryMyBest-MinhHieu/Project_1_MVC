@@ -51,6 +51,26 @@ public class CourseDAL extends ConnectData{
         return courses;
     }
     
+    // Check courseID
+    public boolean checkCourseID(int courseID){
+        boolean check = false;
+        if(OpenConnection()){
+            try {
+                String sql = "SELECT * FROM course WHERE CourseID =" + courseID;
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql);
+                while (rs.next()) {
+                    check = true;                
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(CourseDAL.class.getName()).log(Level.SEVERE, null, ex);
+            }finally{
+                CloseConnection();
+            }
+        }
+        return check;
+    }
+    
     //Thêm {
     public boolean addCourse(Course course){
         try {
@@ -131,6 +151,173 @@ public class CourseDAL extends ConnectData{
         return true;
     }
     
+    // Sửa
+    public boolean updateCourse(Course course){
+        try {
+            if (course instanceof OnlineCourse && ((OnlineCourse) course).getUrl() != null) {
+                return updateOnlineCourse((OnlineCourse) course);
+            } else if (course instanceof OnsiteCourse && ((OnsiteCourse) course).getLocation() != null) {
+                return updateOnsiteCourse((OnsiteCourse) course);
+            } else {
+                return updateBasicCourse(course);
+            }
+        }  catch (Exception  ex) {
+            Logger.getLogger(CourseDAL.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+    
+    public boolean updateBasicCourse(Course course){
+        boolean check = false;
+        if(OpenConnection()){
+            String sql = "UPDATE course SET Title = ?, Credits = ?, DepartmentID = ? WHERE CourseID = ?";
+            try {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setString(1, course.getTitle());
+                stmt.setInt(2, course.getCredits());
+                stmt.setInt(3, course.getDepartmentID());
+                stmt.setInt(4, course.getCourseID());
+                if (stmt.executeUpdate() >= 1) {
+                    check = true;
+                }
+            } catch (Exception e) {
+            }
+        }
+        return check;
+    }
+    
+    public boolean updateOnlineCourse(OnlineCourse onlineCourse){
+        updateBasicCourse(onlineCourse);
+        boolean check = false;
+        if(OpenConnection()){
+            String sql = "UPDATE OnlineCourse SET Url = ? WHERE CourseID = ?";
+            try {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setString(1, onlineCourse.getUrl());
+                stmt.setInt(2, onlineCourse.getCourseID());
+                if (stmt.executeUpdate() >= 1) {
+                    check = true;
+                }
+            } catch (Exception e) {
+            }
+        }
+        return check;
+    }
+    
+        public boolean updateOnsiteCourse(OnsiteCourse onsiteCourse){
+        updateBasicCourse(onsiteCourse);
+        boolean check = false;
+        if(OpenConnection()){
+            String sql = "UPDATE OnsiteCourse SET Location = ?, Days = ?, Time = ? WHERE CourseID = ?";
+            try {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setString(1, onsiteCourse.getLocation());
+                stmt.setString(2, onsiteCourse.getDays());
+                stmt.setString(3, onsiteCourse.getTime());
+                stmt.setInt(4, onsiteCourse.getCourseID());
+                if (stmt.executeUpdate() >= 1) {
+                    check = true;
+                }
+            } catch (Exception e) {
+            }
+        }
+        return check;
+    }
+        
+    // Xóa
+    public Course getCourseByID(int id) {
+        if (OpenConnection()) {
+            String sql = "SELECT * FROM Course WHERE CourseID = ?";
+            try {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, id);
+                ResultSet rs = stmt.executeQuery(sql);                
+                if(rs.next()) {
+                    int retrievedCourseID = rs.getInt("courseID");
+                    String title = rs.getString("title");
+                    int credits = rs.getInt("credits");
+                    int departmentID = rs.getInt("departmentID");   
+                    return new Course(retrievedCourseID, title, credits, departmentID);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(CourseDAL.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
+         
+    public boolean deleteCourse(int courseID) {
+        try {
+            Course course = getCourseByID(courseID);
+
+            if (course instanceof OnlineCourse) {
+                return deleteOnlineCourse(courseID);
+            } else if (course instanceof OnsiteCourse) {
+                return deleteOnsiteCourse(courseID);
+            } else {
+                return deleteBasicCourse(courseID);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAL.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+            
+    public boolean deleteBasicCourse(int courseID) {
+        boolean check = false;
+        if (OpenConnection()) {
+            String sql = "DELETE FROM Course where CourseID = ?";
+            try {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, courseID);
+                if (stmt.executeUpdate() >= 1) {
+                    check = true;
+                }
+            } catch (Exception e) {
+            }
+        }
+        return check;
+    }
+                
+    public boolean deleteOnlineCourse(int courseID){
+        deleteBasicCourse(courseID);
+        boolean check = false;
+        if(OpenConnection()){
+            String sql = "DELETE FROM OnlineCourse where CourseID = ?";
+            try {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, courseID);
+                if (stmt.executeUpdate() >= 1) {
+                    check = true;
+                }
+            } catch (Exception e) {
+            }
+        }
+        return check;
+    }
+    
+    public boolean deleteOnsiteCourse(int courseID) {
+        deleteBasicCourse(courseID);
+        boolean check = false;
+        if (OpenConnection()) {
+            try {
+                String sql = "DELETE FROM OnsiteCourse where CourseID = ?";
+                PreparedStatement stm = conn.prepareStatement(sql);
+                stm.setInt(1, courseID);
+                if (stm.executeUpdate() >= 1) {
+                    check = true;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(OnsiteCourseDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                CloseConnection();
+            }
+
+        }
+
+        return check;
+    }
+        
     // Lấy tên department
     public ArrayList<String> getNameDepartment(){
         ArrayList<String> nameList = new ArrayList<String>();
@@ -167,6 +354,23 @@ public class CourseDAL extends ConnectData{
         return id;
     }
     
-    
-    
+    public String getNameByID(int id){
+        String name = null;
+        if(OpenConnection()){
+            try {
+                String sql = "SELECT Name FROM department WHERE DepartmentID = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.setInt(1, id);
+                    ResultSet rs = stmt.executeQuery();
+                    if (rs.next()) {
+                        name = rs.getString("Name");
+                    }
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(OnlineCourseDAL.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return name;
+    }
+        
 }
