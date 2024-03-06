@@ -15,6 +15,7 @@ import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -59,7 +60,7 @@ public static int COURSE_ID = -1;
         dtm.addColumn("DepartmentID");
         
         tblCourse.setModel(dtm);
-        
+        tblCourse.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ArrayList<Course> list = ciBLL.getCoursesCache();
         
         for (int i = 0; i < list.size(); i++) {
@@ -128,7 +129,7 @@ public static int COURSE_ID = -1;
 
         jLabel6.setFont(new java.awt.Font("Century Gothic", 1, 20)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 204, 255));
-        jLabel6.setText("ASSIGN COURSE INSTRUCTOR");
+        jLabel6.setText("TABLE COURSE CHOOSER");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);

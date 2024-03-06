@@ -55,7 +55,7 @@ public class Course {
     
     @Override
     public String toString() {
-        return   this.getCourseID() +" - " +this.getTitle() + " - " + this.getCredits();
+        return   this.getCourseID() +" - " +this.getTitle();
     }
     
 }
