@@ -306,10 +306,10 @@ public class UpdateCourseInstructorDialog extends javax.swing.JDialog {
                 }
             }
             
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;//This causes all cells to be not editable
-            }
+//            @Override
+//            public boolean isCellEditable(int row, int column) {
+//                return false;
+//            }
 
         };
 

@@ -4,6 +4,7 @@ import DTO.Course;
 import DTO.CourseInfo;
 import DTO.OnlineCourse;
 import DTO.OnsiteCourse;
+import GUI.CourseUI;
 import com.mysql.cj.xdevapi.PreparableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.sql.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 
 public class CourseDAL extends ConnectData{
@@ -79,7 +81,7 @@ public class CourseDAL extends ConnectData{
             } else if (course instanceof OnsiteCourse && ((OnsiteCourse) course).getLocation() != null) {
                 return addOnsiteCourse((OnsiteCourse) course);
             } else {
-                return addBasicCourse(course);
+                return false;
             }
         }  catch (Exception  ex) {
             Logger.getLogger(CourseDAL.class.getName()).log(Level.SEVERE, null, ex);
@@ -151,21 +153,42 @@ public class CourseDAL extends ConnectData{
         return true;
     }
     
-    // Sửa
-    public boolean updateCourse(Course course){
+    // Sửa   
+    public boolean updateCourse(Course course) {
         try {
             if (course instanceof OnlineCourse && ((OnlineCourse) course).getUrl() != null) {
                 return updateOnlineCourse((OnlineCourse) course);
             } else if (course instanceof OnsiteCourse && ((OnsiteCourse) course).getLocation() != null) {
                 return updateOnsiteCourse((OnsiteCourse) course);
             } else {
-                return updateBasicCourse(course);
+                return false;
             }
-        }  catch (Exception  ex) {
+        } catch (Exception ex) {
             Logger.getLogger(CourseDAL.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
     }
+    
+//    public boolean updateCourse(Course course) {
+//        try {
+//            if (course instanceof OnlineCourse) {
+//                OnlineCourse onlineCourse = (OnlineCourse) course;
+//                if (onlineCourse.getUrl() != null) {
+//                    return updateOnlineCourse(onlineCourse);
+//                }
+//            } else if (course instanceof OnsiteCourse) {
+//                OnsiteCourse onsiteCourse = (OnsiteCourse) course;
+//                if (onsiteCourse.getLocation() != null) {
+//                    return updateOnsiteCourse(onsiteCourse);
+//                }
+//            } else {
+//                return updateBasicCourse(course);
+//            }
+//        } catch (Exception ex) {
+//            Logger.getLogger(CourseDAL.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return false;
+//    }
     
     public boolean updateBasicCourse(Course course){
         boolean check = false;
@@ -186,66 +209,108 @@ public class CourseDAL extends ConnectData{
         return check;
     }
     
-    public boolean updateOnlineCourse(OnlineCourse onlineCourse){
-        updateBasicCourse(onlineCourse);
+    public boolean updateOnlineCourse(OnlineCourse onlineCourse) {
         boolean check = false;
-        if(OpenConnection()){
-            String sql = "UPDATE OnlineCourse SET Url = ? WHERE CourseID = ?";
-            try {
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                stmt.setString(1, onlineCourse.getUrl());
-                stmt.setInt(2, onlineCourse.getCourseID());
-                if (stmt.executeUpdate() >= 1) {
-                    check = true;
+        if (OpenConnection()) {
+            if (updateBasicCourse(onlineCourse)) {
+                String sql = "UPDATE onlinecourse SET url = ? WHERE CourseID = ?";
+                try {
+                    PreparedStatement stmt = conn.prepareStatement(sql);
+                    stmt.setString(1, onlineCourse.getUrl());
+                    stmt.setInt(2, onlineCourse.getCourseID());
+                    if (stmt.executeUpdate() >= 1) {
+                        check = true;
+                    }
+                } catch (SQLException e) {
+                    // Xử lý ngoại lệ (để ý đến thông báo lỗi)
+                    e.printStackTrace();
+                } finally {
+                    CloseConnection();
                 }
-            } catch (Exception e) {
             }
         }
         return check;
     }
+
     
-        public boolean updateOnsiteCourse(OnsiteCourse onsiteCourse){
-        updateBasicCourse(onsiteCourse);
+    public boolean updateOnsiteCourse(OnsiteCourse onsiteCourse) {
         boolean check = false;
-        if(OpenConnection()){
-            String sql = "UPDATE OnsiteCourse SET Location = ?, Days = ?, Time = ? WHERE CourseID = ?";
-            try {
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                stmt.setString(1, onsiteCourse.getLocation());
-                stmt.setString(2, onsiteCourse.getDays());
-                stmt.setString(3, onsiteCourse.getTime());
-                stmt.setInt(4, onsiteCourse.getCourseID());
-                if (stmt.executeUpdate() >= 1) {
-                    check = true;
+        if (OpenConnection()) {
+            // Gọi updateBasicCourse trước để cập nhật thông tin chung
+            if (updateBasicCourse(onsiteCourse)) {
+                String sql = "UPDATE onsitecourse SET Location = ?, Days = ?, Time = ? WHERE CourseID = ?";
+                try {
+                    PreparedStatement stmt = conn.prepareStatement(sql);
+                    stmt.setString(1, onsiteCourse.getLocation());
+                    stmt.setString(2, onsiteCourse.getDays());
+                    stmt.setString(3, onsiteCourse.getTime());
+                    stmt.setInt(4, onsiteCourse.getCourseID());
+                    if (stmt.executeUpdate() >= 1) {
+                        check = true;
+                    }
+                } catch (Exception e) {
+                } finally {
+                    CloseConnection();
                 }
-            } catch (Exception e) {
             }
         }
         return check;
     }
         
     // Xóa
-    public Course getCourseByID(int id) {
-        if (OpenConnection()) {
-            String sql = "SELECT * FROM Course WHERE CourseID = ?";
-            try {
-                PreparedStatement stmt = conn.prepareStatement(sql);                
-                stmt.setInt(1, id);
-                ResultSet rs = stmt.executeQuery();                
-                if(rs.next()) {
-                    int retrievedCourseID = rs.getInt("courseID");
-                    String title = rs.getString("title");
-                    int credits = rs.getInt("credits");
-                    int departmentID = rs.getInt("departmentID");   
-                    return new Course(retrievedCourseID, title, credits, departmentID);
+    
+    private Course getCourseByID(int courseID) throws SQLException {
+        Course course = null;
+
+        // Truy vấn dữ liệu từ bảng Course
+        String courseSql = "SELECT * FROM Course WHERE CourseID = ?";
+        try (PreparedStatement courseStatement = conn.prepareStatement(courseSql)) {
+            courseStatement.setInt(1, courseID);
+            ResultSet courseResultSet = courseStatement.executeQuery();
+
+            if (courseResultSet.next()) {
+                int retrievedCourseID = courseResultSet.getInt("CourseID");
+                String title = courseResultSet.getString("title");
+                int credits = courseResultSet.getInt("credits");
+                int departmentID = courseResultSet.getInt("departmentID");
+
+                // Tạo đối tượng Course từ dữ liệu của bảng Course
+                course = new Course(retrievedCourseID, title, credits, departmentID);
+
+                // Kiểm tra xem có dữ liệu trong bảng OnlineCourse hay không
+                String onlineSql = "SELECT * FROM OnlineCourse WHERE CourseID = ?";
+                try (PreparedStatement onlineStatement = conn.prepareStatement(onlineSql)) {
+                    onlineStatement.setInt(1, courseID);
+                    ResultSet onlineResultSet = onlineStatement.executeQuery();
+
+                    if (onlineResultSet.next()) {
+                        // Nếu có dữ liệu trong bảng OnlineCourse, tạo đối tượng OnlineCourse
+                        String url = onlineResultSet.getString("url");
+                        course = new OnlineCourse(courseID, title, credits, departmentID, url);
+                    }
                 }
-            } catch (SQLException ex) {
-                Logger.getLogger(CourseDAL.class.getName()).log(Level.SEVERE, null, ex + "getCourseByID lỗi");
+
+                // Kiểm tra xem có dữ liệu trong bảng OnsiteCourse hay không
+                String onsiteSql = "SELECT * FROM OnsiteCourse WHERE CourseID = ?";
+                try (PreparedStatement onsiteStatement = conn.prepareStatement(onsiteSql)) {
+                    onsiteStatement.setInt(1, courseID);
+                    ResultSet onsiteResultSet = onsiteStatement.executeQuery();
+
+                    if (onsiteResultSet.next()) {
+                        // Nếu có dữ liệu trong bảng OnsiteCourse, tạo đối tượng OnsiteCourse
+                        String location = onsiteResultSet.getString("location");
+                        String days = onsiteResultSet.getString("days");
+                        String time = onsiteResultSet.getString("time");
+                        course = new OnsiteCourse(courseID, title, credits, departmentID, location, days, time);
+                    }
+                }
             }
         }
-        return null;
+
+        return course;
     }
-         
+
+    
     public boolean deleteCourse(int courseID) {
         try {
             Course course = getCourseByID(courseID);
@@ -255,14 +320,16 @@ public class CourseDAL extends ConnectData{
             } else if (course instanceof OnsiteCourse) {
                 return deleteOnsiteCourse(courseID);
             } else {
-                return deleteBasicCourse(courseID);
+                return false;
             }
         } catch (Exception ex) {
-            Logger.getLogger(CourseDAL.class.getName()).log(Level.SEVERE, null, ex +"deleteCourse lỗi");
+            ex.printStackTrace();
+            Logger.getLogger(CourseDAL.class.getName()).log(Level.SEVERE, null, ex + "deleteCourse lỗi");
             return false;
         }
     }
-            
+    
+          
     public boolean deleteBasicCourse(int courseID) {
         boolean check = false;
         if (OpenConnection()) {
@@ -279,16 +346,16 @@ public class CourseDAL extends ConnectData{
         return check;
     }
                 
-    public boolean deleteOnlineCourse(int courseID){
+    public boolean deleteOnlineCourse(int courseID){  
         deleteBasicCourse(courseID);
         boolean check = false;
         if(OpenConnection()){
-            String sql = "DELETE FROM OnlineCourse where CourseID = ?";
+            String sql = "DELETE FROM onlinecourse WHERE CourseID = ?";
             try {
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 stmt.setInt(1, courseID);
                 if (stmt.executeUpdate() >= 1) {
-                    check = true;
+                    check = true;                   
                 }
             } catch (Exception e) {
             }

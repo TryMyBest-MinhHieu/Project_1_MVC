@@ -239,7 +239,7 @@ public class addCourseUI extends javax.swing.JFrame {
                 }
 
             } else { // Thêm Course online
-                String url = txtCourseID.getText();
+                String url = txtUrl.getText();
                 OnlineCourse onlineCourse = new OnlineCourse(courseid, title, credit, departmentid, url);               
                 if (courseBLL.addCourse(onlineCourse)) {
                     JOptionPane.showMessageDialog(this, "Thêm thành công");

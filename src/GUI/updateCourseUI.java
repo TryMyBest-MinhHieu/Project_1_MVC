@@ -210,7 +210,7 @@ public class updateCourseUI extends javax.swing.JFrame {
         int departmentid = courseBLL.getIDByName((String) txtDepartmentID.getSelectedItem());
         //if (courseBLL.checkCourseID(courseid) == false) { // kiểm tra courseid tồn tại
             // sửa Course onsite
-            if (txtUrl == null) {
+            if (txtUrl.getText().isEmpty()) {
                 String location = txtLocation.getText();
                 String day = txtDay.getText();
                 String time = txtTime.getText();
@@ -224,7 +224,7 @@ public class updateCourseUI extends javax.swing.JFrame {
                 }
 
             } else { // sửa Course online
-                String url = txtCourseID.getText();
+                String url = txtUrl.getText();
                 OnlineCourse onlineCourse = new OnlineCourse(courseid, title, credit, departmentid, url);
                 if (courseBLL.updateCourse(onlineCourse)) {
                     JOptionPane.showMessageDialog(this, "Sửa thành công");
