@@ -229,9 +229,9 @@ public class CourseDAL extends ConnectData{
         if (OpenConnection()) {
             String sql = "SELECT * FROM Course WHERE CourseID = ?";
             try {
-                PreparedStatement stmt = conn.prepareStatement(sql);
+                PreparedStatement stmt = conn.prepareStatement(sql);                
                 stmt.setInt(1, id);
-                ResultSet rs = stmt.executeQuery(sql);                
+                ResultSet rs = stmt.executeQuery();                
                 if(rs.next()) {
                     int retrievedCourseID = rs.getInt("courseID");
                     String title = rs.getString("title");
@@ -240,7 +240,7 @@ public class CourseDAL extends ConnectData{
                     return new Course(retrievedCourseID, title, credits, departmentID);
                 }
             } catch (SQLException ex) {
-                Logger.getLogger(CourseDAL.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CourseDAL.class.getName()).log(Level.SEVERE, null, ex + "getCourseByID lỗi");
             }
         }
         return null;
@@ -258,7 +258,7 @@ public class CourseDAL extends ConnectData{
                 return deleteBasicCourse(courseID);
             }
         } catch (Exception ex) {
-            Logger.getLogger(CourseDAL.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CourseDAL.class.getName()).log(Level.SEVERE, null, ex +"deleteCourse lỗi");
             return false;
         }
     }
