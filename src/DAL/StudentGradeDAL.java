@@ -4,6 +4,7 @@
  */
 package DAL;
 
+import DTO.Person;
 import DTO.StudentGrade;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -39,6 +40,9 @@ public class StudentGradeDAL extends ConnectData {
                     sg.setLastName(rs.getString("LastName"));
                     sg.setTitle(rs.getString("Title"));
                     sg.setGrade(rs.getDouble("Grade"));
+                    if (rs.wasNull()) {
+                        sg.setGrade(-1);
+                    }
                     list.add(sg);
                 }
 
@@ -49,6 +53,32 @@ public class StudentGradeDAL extends ConnectData {
             }
         }
 
+        return list;
+    }
+
+    public ArrayList<Person> getAllStudentCourseByCourseId(String courseId) {
+        ArrayList<Person> list = new ArrayList<>();
+        if (OpenConnection()) {
+            try {
+                String sql = "select PersonID, Firstname, Lastname, EnrollmentDate"
+                        + " from person"
+                        + " where EnrollmentDate IS NOT NULL;";
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(sql);
+                while (rs.next()) {
+                    Person person = new Person();
+                    person.setPersonID(rs.getInt("PersonID"));
+                    person.setFirstname(rs.getString("Firstname"));
+                    person.setLastname(rs.getString("Lastname"));
+                    person.setEnrollmentDate(rs.getDate("EnrollmentDate"));
+                    list.add(person);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                CloseConnection();
+            }
+        }
         return list;
     }
 
@@ -74,21 +104,39 @@ public class StudentGradeDAL extends ConnectData {
 
     public boolean Add(String enrollmentId, String courseId, String studentId, float grade) {
         if (OpenConnection()) {
-            String insertSql = "INSERT INTO "
-                    + "studentgrade(EnrollmentID, CourseID, StudentID, Grade) "
-                    + "VALUES (?, ?, ?, ?)";
-            try (PreparedStatement insertStatement = conn.prepareStatement(insertSql)) {
-                insertStatement.setString(1, enrollmentId);
-                insertStatement.setString(2, courseId);
-                insertStatement.setString(3, studentId);
-                insertStatement.setFloat(4, grade);
-                if (insertStatement.executeUpdate() > 0) {
-                    return true;
+            if (grade == -1) {
+                String insertSql = "INSERT INTO "
+                        + "studentgrade(EnrollmentID, CourseID, StudentID) "
+                        + "VALUES (?, ?, ?)";
+                try (PreparedStatement insertStatement = conn.prepareStatement(insertSql)) {
+                    insertStatement.setString(1, enrollmentId);
+                    insertStatement.setString(2, courseId);
+                    insertStatement.setString(3, studentId);
+                    if (insertStatement.executeUpdate() > 0) {
+                        return true;
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
+                    CloseConnection();
                 }
-            } catch (SQLException ex) {
-                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                CloseConnection();
+            } else {
+                String insertSql = "INSERT INTO "
+                        + "studentgrade(EnrollmentID, CourseID, StudentID, Grade) "
+                        + "VALUES (?, ?, ?, ?)";
+                try (PreparedStatement insertStatement = conn.prepareStatement(insertSql)) {
+                    insertStatement.setString(1, enrollmentId);
+                    insertStatement.setString(2, courseId);
+                    insertStatement.setString(3, studentId);
+                    insertStatement.setFloat(4, grade);
+                    if (insertStatement.executeUpdate() > 0) {
+                        return true;
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
+                    CloseConnection();
+                }
             }
         }
         return false;
@@ -348,6 +396,9 @@ public class StudentGradeDAL extends ConnectData {
                     sg.setLastName(rs.getString("LastName"));
                     sg.setTitle(rs.getString("Title"));
                     sg.setGrade(rs.getDouble("Grade"));
+                    if (rs.wasNull()) {
+                        sg.setGrade(-1);
+                    }
                     list.add(sg);
                 }
             } catch (SQLException ex) {

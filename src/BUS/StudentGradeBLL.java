@@ -4,6 +4,7 @@
  */
 package BUS;
 import DAL.StudentGradeDAL;
+import DTO.Person;
 import DTO.StudentGrade;
 import java.util.ArrayList;
 
@@ -13,6 +14,10 @@ public class StudentGradeBLL {
     
     public ArrayList<StudentGrade> getAllStudentGrade(){
         return sgDAL.getAllStudentGrade();
+    }    
+    
+    public ArrayList<Person> getAllStudentCourseByCourseId(String courseId){
+        return sgDAL.getAllStudentCourseByCourseId(courseId);
     }
     
     public boolean Update(String enrollmentId, float grade){

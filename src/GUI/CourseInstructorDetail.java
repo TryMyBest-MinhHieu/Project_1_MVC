@@ -15,8 +15,8 @@ public class CourseInstructorDetail extends javax.swing.JFrame {
     public CourseInstructorDetail(CourseInstructor ci) {
         initComponents();
         detail = ci;
-        txtCourseID.setText(String.valueOf(ci.getCourseID()));
-        txtPersonID.setText(String.valueOf(ci.getPersonID()));
+        txtCourseID.setText(String.valueOf(ci.getCourse().getCourseID()));
+        txtPersonID.setText(String.valueOf(ci.getPerson().getPersonID()));
         
     }
 
