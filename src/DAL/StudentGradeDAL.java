@@ -56,7 +56,7 @@ public class StudentGradeDAL extends ConnectData {
         return list;
     }
 
-    public ArrayList<Person> getAllStudentCourseByCourseId(String courseId) {
+    public ArrayList<Person> getAllStudent() {
         ArrayList<Person> list = new ArrayList<>();
         if (OpenConnection()) {
             try {
@@ -142,7 +142,50 @@ public class StudentGradeDAL extends ConnectData {
         return false;
     }
 
-    public boolean GradeIsExist(String courseId, String studentId) {
+    public boolean removeStudentFromCourse(String courseId, String studentId) {
+        if (OpenConnection()) {
+            try {
+                String sql = "DELETE FROM studentgrade WHERE"
+                        + " CourseID = ?"
+                        + " AND StudentID = ?";
+                 PreparedStatement stm = conn.prepareStatement(sql);
+                stm.setString(1, courseId);
+                stm.setString(2, studentId);
+                if (stm.executeUpdate() >= 1) {
+                    return true;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                CloseConnection();
+            }
+        }
+        return false;
+    }
+
+    public boolean StudentAlreadyHaveGrade(String courseId, String studentId) {
+        if (OpenConnection()) {
+            try {
+                String sql = "select *"
+                        + " from studentgrade"
+                        + " where CourseID = " + courseId
+                        + " and StudentID = " + studentId
+                        + " and Grade is not null;";
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(sql);
+                if (rs.next()) {
+                    return true;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                CloseConnection();
+            }
+        }
+        return false;
+    }
+
+    public boolean StudentAlreadyInCourse(String courseId, String studentId) {
         if (OpenConnection()) {
             try {
                 String sql = "select *"

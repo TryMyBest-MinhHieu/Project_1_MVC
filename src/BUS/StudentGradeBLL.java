@@ -16,8 +16,8 @@ public class StudentGradeBLL {
         return sgDAL.getAllStudentGrade();
     }    
     
-    public ArrayList<Person> getAllStudentCourseByCourseId(String courseId){
-        return sgDAL.getAllStudentCourseByCourseId(courseId);
+    public ArrayList<Person> getAllStudent(){
+        return sgDAL.getAllStudent();
     }
     
     public boolean Update(String enrollmentId, float grade){
@@ -28,8 +28,15 @@ public class StudentGradeBLL {
         return sgDAL.Add(enrollmentId, courseId, studentId, grade);
     }
     
-    public boolean GradeIsExist(String courseId, String studentId){
-        return sgDAL.GradeIsExist(courseId, studentId);
+    public boolean StudentAlreadyInCourse(String courseId, String studentId){
+        return sgDAL.StudentAlreadyInCourse(courseId, studentId);
+    }
+    
+    public boolean StudentAlreadyHaveGrade(String courseId, String studentId){
+        return sgDAL.StudentAlreadyHaveGrade(courseId, studentId);
+    }
+    public boolean removeStudentFromCourse(String courseId, String studentId){
+        return sgDAL.removeStudentFromCourse(courseId, studentId);
     }
     
     public String GetTitleById(int id){

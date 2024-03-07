@@ -527,7 +527,7 @@ public class StudentGradeUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        StudentCourseUI newFrame = new StudentCourseUI();
+        AddStudentToCourseUI newFrame = new AddStudentToCourseUI();
         newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         newFrame.setVisible(true);
 //        status = Status.ADD;
@@ -627,7 +627,7 @@ public class StudentGradeUI extends javax.swing.JFrame {
                 String courseId = (String) cbxCourseID.getSelectedItem();
                 String studentId = (String) cbxStudentID.getSelectedItem();
                 float grade = (txtGrade.getText().equals("")) ? 0 : Float.parseFloat(txtGrade.getText());
-                if (sgBLL.GradeIsExist(courseId, studentId)) {
+                if (sgBLL.StudentAlreadyInCourse(courseId, studentId)) {
                     JOptionPane.showMessageDialog(null,
                             "Students already add for this course!",
                             "Error",
