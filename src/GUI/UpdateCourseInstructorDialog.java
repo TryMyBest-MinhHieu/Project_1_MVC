@@ -306,10 +306,10 @@ public class UpdateCourseInstructorDialog extends javax.swing.JDialog {
                 }
             }
             
-//            @Override
-//            public boolean isCellEditable(int row, int column) {
-//                return false;
-//            }
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == getColumnCount() - 1;
+            }
 
         };
 
