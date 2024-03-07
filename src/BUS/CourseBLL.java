@@ -55,5 +55,10 @@ public class CourseBLL {
     public String getNameByID(int id){
         return cDAL.getNameByID(id);
     }
+    
+    //Tìm kiếm
+    public ArrayList<Course> searchCourse(String keyword){
+        return cDAL.searchCourse(keyword);
+    }
 
 }

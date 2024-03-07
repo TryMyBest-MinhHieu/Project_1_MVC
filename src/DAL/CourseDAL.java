@@ -5,6 +5,7 @@ import DTO.CourseInfo;
 import DTO.OnlineCourse;
 import DTO.OnsiteCourse;
 import GUI.CourseUI;
+import com.mysql.cj.jdbc.result.ResultSetMetaData;
 import com.mysql.cj.xdevapi.PreparableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -440,4 +441,54 @@ public class CourseDAL extends ConnectData{
         return name;
     }
         
+public ArrayList<Course> searchCourse(String keyword) {
+        ArrayList<Course> result = new ArrayList<>();
+
+//        String sql = "SELECT C.CourseID, C.Title, C.Credits, C.DepartmentID, O.Url, OS.Location, OS.Days, OS.Time " +
+//                 "FROM Course C " +
+//                 "LEFT JOIN OnlineCourse O ON C.CourseID = O.CourseID " +
+//                 "LEFT JOIN OnsiteCourse OS ON C.CourseID = OS.CourseID " +
+//                 "WHERE C.CourseID LIKE ? OR C.Title LIKE ? OR C.Credits LIKE ? OR C.DepartmentID LIKE ?";
+         String sql = "SELECT C.CourseID, C.Title, C.Credits, C.DepartmentID, O.Url, OS.Location, OS.Days, OS.Time " +
+                 "FROM Course C " +
+                 "LEFT JOIN OnlineCourse O ON C.CourseID = O.CourseID " +
+                 "LEFT JOIN OnsiteCourse OS ON C.CourseID = OS.CourseID " +
+                 "WHERE C.CourseID LIKE ? OR C.Title LIKE ? OR C.Credits LIKE ? OR C.DepartmentID LIKE ? " +
+                 "   OR O.Url LIKE ? OR OS.Location LIKE ? OR OS.Days LIKE ? OR OS.Time LIKE ?";
+        try (PreparedStatement statement = conn.prepareStatement(sql)){
+            ResultSetMetaData metaData = (ResultSetMetaData) statement.getMetaData();
+            int totalColumns = metaData.getColumnCount(); // 8
+            for (int i = 1; i <= totalColumns; i++) {
+                statement.setString(i, "%" + keyword + "%");
+            }
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    int courseID = resultSet.getInt("CourseID");
+                    String title = resultSet.getString("Title");
+                    int credits = resultSet.getInt("Credits");
+                    int departmentID = resultSet.getInt("DepartmentID");
+                    Course course;
+                    if (resultSet.getString("Url") != null) {
+                        // OnlineCourse
+                        String url = resultSet.getString("Url");
+                        course = new OnlineCourse(courseID, title, credits, departmentID, url);
+                    } else {
+                        // OnsiteCourse
+                        String location = resultSet.getString("Location");
+                        String days = resultSet.getString("Days");
+                        String time = resultSet.getString("Time");
+                        course = new OnsiteCourse(courseID, title, credits, departmentID, location, days, time);
+                    }
+
+                    result.add(course);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
 }

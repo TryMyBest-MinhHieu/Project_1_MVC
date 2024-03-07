@@ -1,4 +1,3 @@
-
 package GUI;
 
 import BUS.CourseBLL;
@@ -12,11 +11,10 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-
 public class CourseUI extends javax.swing.JFrame {
 
     CourseBLL courseBLL = new CourseBLL();
-    
+
     public CourseUI() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -25,9 +23,8 @@ public class CourseUI extends javax.swing.JFrame {
 
     public void loadTableCourse() {
         ArrayList<Course> courses = courseBLL.getAllCourses();
-        // Tạo mô hình cho bảng
         DefaultTableModel model = new DefaultTableModel(
-                new Object[]{"STT","Course ID", "Title", "Credits", "Department ID", "URL", "Location", "Days", "Time"}, 0);
+                new Object[]{"STT", "Course ID", "Title", "Credits", "Department ID", "URL", "Location", "Days", "Time"}, 0);
         // Thêm dữ liệu từ danh sách khóa học vào mô hình
         int counter = 1;
         for (Course course : courses) {
@@ -46,7 +43,31 @@ public class CourseUI extends javax.swing.JFrame {
         }
         Table.setModel(model);
     }
-    
+
+    private void loadTableSearch(ArrayList<Course> courses) {
+        DefaultTableModel model = new DefaultTableModel(
+                new Object[]{"STT", "Course ID", "Title", "Credits", "Department ID", "URL", "Location", "Days", "Time"}, 0);
+
+        int counter = 1;
+        for (Course course : courses) {
+            Object[] rowData = new Object[]{
+                counter++,
+                course.getCourseID(),
+                course.getTitle(),
+                course.getCredits(),
+                course.getDepartmentID(),
+                (course instanceof OnlineCourse) ? ((OnlineCourse) course).getUrl() : null,
+                (course instanceof OnsiteCourse) ? ((OnsiteCourse) course).getLocation() : null,
+                (course instanceof OnsiteCourse) ? ((OnsiteCourse) course).getDays() : null,
+                (course instanceof OnsiteCourse) ? ((OnsiteCourse) course).getTime() : null
+            };
+            model.addRow(rowData);
+        }
+
+        Table.setModel(model);
+    }
+
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -56,11 +77,11 @@ public class CourseUI extends javax.swing.JFrame {
         btnAdd = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        txtSearch = new javax.swing.JTextField();
         jButton4 = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(255, 204, 204));
@@ -109,8 +130,11 @@ public class CourseUI extends javax.swing.JFrame {
 
         jButton4.setBackground(new java.awt.Color(255, 102, 102));
         jButton4.setText("Search");
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(255, 0, 51));
         jPanel1.setForeground(new java.awt.Color(255, 51, 51));
@@ -135,6 +159,9 @@ public class CourseUI extends javax.swing.JFrame {
                 .addContainerGap(19, Short.MAX_VALUE))
         );
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel2.setText("Tìm kiếm");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -158,9 +185,10 @@ public class CourseUI extends javax.swing.JFrame {
                             .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(32, 32, 32))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(34, 34, 34)
                         .addComponent(jButton4)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -179,12 +207,11 @@ public class CourseUI extends javax.swing.JFrame {
                         .addGap(174, 174, 174)
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
+                        .addGap(16, 16, 16)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtSearch))
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(10, 10, 10))
@@ -204,7 +231,7 @@ public class CourseUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    
+
     private void TableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableMousePressed
         int i = Table.getSelectedRow();
         JTable table = (JTable) evt.getSource();
@@ -217,7 +244,6 @@ public class CourseUI extends javax.swing.JFrame {
             int credits = Integer.parseInt(model.getValueAt(i, 3).toString());
             int departmentid = Integer.parseInt(model.getValueAt(i, 4).toString());
 
-            
             String url = model.getValueAt(i, 5) != null ? model.getValueAt(i, 5).toString() : "";
             String location = model.getValueAt(i, 6) != null ? model.getValueAt(i, 6).toString() : "";
             String days = model.getValueAt(i, 7) != null ? model.getValueAt(i, 7).toString() : "";
@@ -230,23 +256,33 @@ public class CourseUI extends javax.swing.JFrame {
     }//GEN-LAST:event_TableMousePressed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-         int selectedRow = Table.getSelectedRow();
-         if (selectedRow >= 0) {
+        int selectedRow = Table.getSelectedRow();
+        if (selectedRow >= 0) {
             int id = Integer.parseInt(Table.getValueAt(selectedRow, 1).toString());
             if (JOptionPane.showConfirmDialog(null, "Xác nhận xóa", "Warnning", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                 boolean success = courseBLL.deleteCourse(id);
-                 if (success) {
-                     JOptionPane.showMessageDialog(CourseUI.this, "Xóa thành công");
-                     loadTableCourse();
-                     
-                 } else {
-                     JOptionPane.showMessageDialog(CourseUI.this, "Xóa thất bại");
-                 }
-             }
-         } else {
-             JOptionPane.showMessageDialog(CourseUI.this, "Chọn khóa học muốn xóa");
+                boolean success = courseBLL.deleteCourse(id);
+                if (success) {
+                    JOptionPane.showMessageDialog(CourseUI.this, "Xóa thành công");
+                    loadTableCourse();
+
+                } else {
+                    JOptionPane.showMessageDialog(CourseUI.this, "Xóa thất bại");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(CourseUI.this, "Chọn khóa học muốn xóa");
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        String keyword = txtSearch.getText().trim();
+        if (!keyword.isEmpty()) {
+            ArrayList<Course> searchResults = courseBLL.searchCourse(keyword);
+            loadTableSearch(searchResults);
+        } else {
+            loadTableCourse();
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -255,10 +291,10 @@ public class CourseUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }
