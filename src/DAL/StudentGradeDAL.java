@@ -142,13 +142,36 @@ public class StudentGradeDAL extends ConnectData {
         return false;
     }
 
+    public boolean addNewStudent(String studentId, String firstName, String lastName, String enrollmentDate) {
+        if (OpenConnection()) {
+                String insertSql = "INSERT INTO"
+                        + " person(PersonID , Firstname, Lastname, EnrollmentDate)"
+                        + " VALUES (?, ?, ?, ?)";
+                try (PreparedStatement insertStatement = conn.prepareStatement(insertSql)) {
+                    insertStatement.setString(1, studentId);
+                    insertStatement.setString(2, firstName);
+                    insertStatement.setString(3, lastName);
+                    insertStatement.setString(4, enrollmentDate);
+                    if (insertStatement.executeUpdate() > 0) {
+                        return true;
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
+                    CloseConnection();
+                }
+            
+        }
+        return false;
+    }
+
     public boolean removeStudentFromCourse(String courseId, String studentId) {
         if (OpenConnection()) {
             try {
                 String sql = "DELETE FROM studentgrade WHERE"
                         + " CourseID = ?"
                         + " AND StudentID = ?";
-                 PreparedStatement stm = conn.prepareStatement(sql);
+                PreparedStatement stm = conn.prepareStatement(sql);
                 stm.setString(1, courseId);
                 stm.setString(2, studentId);
                 if (stm.executeUpdate() >= 1) {
@@ -272,6 +295,24 @@ public class StudentGradeDAL extends ConnectData {
         if (OpenConnection()) {
             try {
                 String sql = "SELECT MAX(EnrollmentID) AS maxId FROM studentgrade;";
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(sql);
+                if (rs.next()) {
+                    return rs.getInt("maxId");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                CloseConnection();
+            }
+        }
+        return -1;
+    }
+
+    public int GetMaxIdPerson() {
+        if (OpenConnection()) {
+            try {
+                String sql = "SELECT MAX(PersonID) AS maxId FROM Person";
                 Statement stm = conn.createStatement();
                 ResultSet rs = stm.executeQuery(sql);
                 if (rs.next()) {
@@ -451,6 +492,37 @@ public class StudentGradeDAL extends ConnectData {
             }
         }
 
+        return list;
+    }
+
+    public ArrayList<Person> searchStudent(String data) {
+        data = "%" + data + "%";
+        ArrayList<Person> list = new ArrayList<>();
+        if (OpenConnection()) {
+            try {
+                String sql = "select PersonID, Firstname, Lastname, EnrollmentDate"
+                        + " from person"
+                        + " where EnrollmentDate IS NOT NULL"
+                        + " and (PersonID like '" + data + "'"
+                        + " or Firstname like '" + data + "'"
+                        + " or Lastname like '" + data + "'"
+                        + " or EnrollmentDate like '" + data + "');";
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(sql);
+                while (rs.next()) {
+                    Person person = new Person();
+                    person.setPersonID(rs.getInt("PersonID"));
+                    person.setFirstname(rs.getString("Firstname"));
+                    person.setLastname(rs.getString("Lastname"));
+                    person.setEnrollmentDate(rs.getDate("EnrollmentDate"));
+                    list.add(person);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentGradeDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                CloseConnection();
+            }
+        }
         return list;
     }
 }

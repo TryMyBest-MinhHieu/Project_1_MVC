@@ -4,9 +4,14 @@ import BUS.CourseInstructorBLL;
 import BUS.StudentGradeBLL;
 import DTO.Course;
 import DTO.Person;
+import DTO.StudentGrade;
 import java.awt.event.ItemEvent;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JOptionPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
@@ -32,10 +37,54 @@ public class AddStudentToCourseUI extends javax.swing.JFrame {
     public AddStudentToCourseUI() {
         initComponents();
 
+        jlabel_studentID.setText("");
+        jlable_Day.setText("");
         loadCbxCourseID();
         loadTable();
         UpdateCheckboxOnTableEvent();
+        AddSearchEvent();
 
+    }
+
+    private void SearchTextChange() {
+        dtm.setRowCount(0);
+        dtm.setColumnCount(0);
+        dtm.addColumn("Student ID");
+        dtm.addColumn("First Name");
+        dtm.addColumn("Last Name");
+        dtm.addColumn("Enrollment Date");
+        dtm.addColumn("In Course");
+        tableStudentInCourse.setModel(dtm);
+        ArrayList<Person> list = new ArrayList<>();
+        list = sgBLL.searchStudent(txtSearch.getText());
+        for (int i = 0; i < list.size(); i++) {
+            Person person = list.get(i);
+            dtm.addRow(new Object[]{
+                person.getPersonID(), person.getFirstname(), person.getLastname(),
+                person.getEnrollmentDate(),
+                sgBLL.StudentAlreadyInCourse(Integer.toString(((Course) cbxCourse.getSelectedItem()).getCourseID()),
+                Integer.toString(person.getPersonID()))
+            });
+        }
+    }
+
+    private void AddSearchEvent() {
+        txtSearch.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                SearchTextChange();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                SearchTextChange();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+        });
     }
 
     private void UpdateCheckboxOnTableEvent() {
@@ -63,12 +112,12 @@ public class AddStudentToCourseUI extends javax.swing.JFrame {
                                         "Student already have grade, Can't remove Student from Course!",
                                         "Error",
                                         JOptionPane.INFORMATION_MESSAGE);
-                            }else{
-                                if(sgBLL.removeStudentFromCourse(courseId,studentId)){
+                            } else {
+                                if (sgBLL.removeStudentFromCourse(courseId, studentId)) {
                                     JOptionPane.showMessageDialog(null,
-                                        "Remove Success!",
-                                        "Notification",
-                                        JOptionPane.INFORMATION_MESSAGE);
+                                            "Remove Success!",
+                                            "Notification",
+                                            JOptionPane.INFORMATION_MESSAGE);
                                 }
                             }
                         }
@@ -135,10 +184,10 @@ public class AddStudentToCourseUI extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         txtLastName = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
+        jlable_Day = new javax.swing.JLabel();
         btnCancel = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
-        jLabel11 = new javax.swing.JLabel();
+        jlabel_studentID = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -190,6 +239,11 @@ public class AddStudentToCourseUI extends javax.swing.JFrame {
         btn_newStudent.setForeground(new java.awt.Color(255, 255, 255));
         btn_newStudent.setText("New Student");
         btn_newStudent.setBorderPainted(false);
+        btn_newStudent.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_newStudentActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel4.setText("Search");
@@ -227,9 +281,9 @@ public class AddStudentToCourseUI extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel9.setText("Enrollment Date:");
 
-        jLabel10.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel10.setText("31-02-2023");
+        jlable_Day.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jlable_Day.setForeground(new java.awt.Color(255, 0, 0));
+        jlable_Day.setText("31-02-2023");
 
         btnCancel.setBackground(new java.awt.Color(255, 0, 0));
         btnCancel.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
@@ -237,6 +291,11 @@ public class AddStudentToCourseUI extends javax.swing.JFrame {
         btnCancel.setText("Cancel");
         btnCancel.setBorderPainted(false);
         btnCancel.setEnabled(false);
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
 
         btnSave.setBackground(new java.awt.Color(255, 0, 0));
         btnSave.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
@@ -244,10 +303,15 @@ public class AddStudentToCourseUI extends javax.swing.JFrame {
         btnSave.setText("Save");
         btnSave.setBorderPainted(false);
         btnSave.setEnabled(false);
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
 
-        jLabel11.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel11.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel11.setText("11");
+        jlabel_studentID.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jlabel_studentID.setForeground(new java.awt.Color(255, 0, 0));
+        jlabel_studentID.setText("11");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -273,12 +337,12 @@ public class AddStudentToCourseUI extends javax.swing.JFrame {
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel9)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel10))
+                                        .addComponent(jlable_Day))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel6)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel11)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jlabel_studentID)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel7)
@@ -287,8 +351,8 @@ public class AddStudentToCourseUI extends javax.swing.JFrame {
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel8)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtLastName)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(txtLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(btnCancel)
@@ -309,15 +373,16 @@ public class AddStudentToCourseUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
-                            .addComponent(jLabel11)
                             .addComponent(txtFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jlabel_studentID)
+                                .addComponent(jLabel7)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9)
-                            .addComponent(jLabel10)
+                            .addComponent(jlable_Day)
                             .addComponent(jLabel8)
                             .addComponent(txtLastName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -359,6 +424,62 @@ public class AddStudentToCourseUI extends javax.swing.JFrame {
             loadTable();
         }
     }//GEN-LAST:event_cbxCourseItemStateChanged
+
+    private void btn_newStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_newStudentActionPerformed
+        btn_newStudent.setEnabled(false);
+        btnSave.setEnabled(true);
+        btnCancel.setEnabled(true);
+        txtFirstName.setEnabled(true);
+        txtLastName.setEnabled(true);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date currentDate = new Date();
+        String formattedDate = dateFormat.format(currentDate);
+        jlable_Day.setText(formattedDate);
+
+        int nextId = sgBLL.GetMaxIdPerson() + 1;
+        jlabel_studentID.setText("" + nextId);
+    }//GEN-LAST:event_btn_newStudentActionPerformed
+
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        btn_newStudent.setEnabled(true);
+        btnSave.setEnabled(false);
+        btnCancel.setEnabled(false);
+        txtFirstName.setEnabled(false);
+        txtLastName.setEnabled(false);
+        txtFirstName.setText("");
+        txtLastName.setText("");
+        jlabel_studentID.setText("");
+        jlable_Day.setText("");
+    }//GEN-LAST:event_btnCancelActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        if (sgBLL.addNewStudent(
+                jlabel_studentID.getText(),
+                txtFirstName.getText(),
+                txtLastName.getText(),
+                jlable_Day.getText())) {
+            JOptionPane.showMessageDialog(null,
+                    "Add New Student Success!",
+                    "Notification",
+                    JOptionPane.INFORMATION_MESSAGE);
+            btn_newStudent.setEnabled(true);
+            btnSave.setEnabled(false);
+            btnCancel.setEnabled(false);
+            txtFirstName.setEnabled(false);
+            txtLastName.setEnabled(false);
+            txtFirstName.setText("");
+            txtLastName.setText("");
+            jlabel_studentID.setText("");
+            jlable_Day.setText("");
+            loadTable();
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "Add New Student Fail!",
+                    "Error",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSaveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -416,8 +537,6 @@ public class AddStudentToCourseUI extends javax.swing.JFrame {
     private javax.swing.JButton btn_newStudent;
     private javax.swing.JComboBox<Course> cbxCourse;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -428,6 +547,8 @@ public class AddStudentToCourseUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel jlabel_studentID;
+    private javax.swing.JLabel jlable_Day;
     private javax.swing.JTable tableStudentInCourse;
     private javax.swing.JTextField txtFirstName;
     private javax.swing.JTextField txtLastName;
