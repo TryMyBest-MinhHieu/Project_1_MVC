@@ -12,6 +12,8 @@ import DTO.CourseInstructor;
 import java.util.Date;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.TableRowSorter;
 
 public class CourseInstructorUI extends javax.swing.JFrame {
@@ -25,10 +27,66 @@ public class CourseInstructorUI extends javax.swing.JFrame {
         ciBLL = new CourseInstructorBLL();
         initComponents();
         loadTableCourseInstructor();
+        AddSearchEvent();
+        
+    }
+    
+    private void AddSearchEvent() {
+        txtSearch.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                SearchTextChange();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                SearchTextChange();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+
+            
+        });
+    }
+
+    private void SearchTextChange() {
+        dtm = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;//This causes all cells to be not editable
+            }
+        };
+        dtm.addColumn("CourseID");
+        dtm.addColumn("Title");
+        dtm.addColumn("Credits");
+        dtm.addColumn("InstructorID");
+        dtm.addColumn("Fullname");
+        dtm.addColumn("Hiredate");
+        dtm.addColumn("DepartmentName");
+
+        tblCoureInstructor.setModel(dtm);
+        tblCoureInstructor.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        ArrayList<CourseInstructor> list = new ArrayList<>();
+        list = ciBLL.searchCourseInstructor(txtSearch.getText());
+        for (int i = 0; i < list.size(); i++) {
+            CourseInstructor ci = list.get(i);
+            dtm.addRow(new Object[]{
+                ci.getCourse().getCourseID(),
+                ci.getCourse().getTitle(),
+                ci.getCourse().getCredits(),
+                ci.getPerson().getPersonID(),
+                ci.getPerson().getFirstname() + " " + ci.getPerson().getLastname(),
+                ci.getPerson().getHireDate(),
+                ci.getDepartmentName()
+            });
+        }
     }
 
     private void loadTableCourseInstructor() {
-         dtm = new DefaultTableModel() {
+        dtm = new DefaultTableModel() {
              @Override
             public boolean isCellEditable(int row, int column) {
                 return false;//This causes all cells to be not editable
@@ -160,9 +218,9 @@ public class CourseInstructorUI extends javax.swing.JFrame {
         jLabel4.setText("Search");
 
         txtSearch.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtSearchKeyReleased(evt);
+        txtSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSearchActionPerformed(evt);
             }
         });
 
@@ -197,8 +255,8 @@ public class CourseInstructorUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(14, 14, 14))
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(60, 60, 60))
             .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 914, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
@@ -211,7 +269,7 @@ public class CourseInstructorUI extends javax.swing.JFrame {
                     .addComponent(btnDelete)
                     .addComponent(jLabel4)
                     .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -225,7 +283,7 @@ public class CourseInstructorUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 23, Short.MAX_VALUE))
         );
 
         pack();
@@ -248,6 +306,7 @@ public class CourseInstructorUI extends javax.swing.JFrame {
                     "Vui Lòng Chọn Record Muốn Xóa!!");
             return;
         }
+        
 
         int courseID = (int) tblCoureInstructor.getValueAt(row, 0);
         int personID = (int) tblCoureInstructor.getValueAt(row, 3);
@@ -307,16 +366,11 @@ public class CourseInstructorUI extends javax.swing.JFrame {
 
     }//GEN-LAST:event_tblCoureInstructorMousePressed
 
-    private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
-        String query = txtSearch.getText();
-        filerTable(query);
-    }//GEN-LAST:event_txtSearchKeyReleased
+    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+        
+    }//GEN-LAST:event_txtSearchActionPerformed
 
-    private void filerTable(String query) {
-        TableRowSorter<DefaultTableModel> tr = new TableRowSorter<>(dtm);
-        tblCoureInstructor.setRowSorter(tr);
-        tr.setRowFilter(RowFilter.regexFilter("(?i)" + query));
-    }
+ 
     
     
     public static void main(String args[]) {

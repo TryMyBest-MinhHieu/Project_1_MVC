@@ -23,6 +23,63 @@ import java.util.logging.Logger;
  */
 public class CourseInstructorDAL extends ConnectData {
 
+    public ArrayList<CourseInstructor> searchCourseInstructor(String query) {
+        query = "%" + query + "%";
+   
+        ArrayList<CourseInstructor> list = new ArrayList<>();
+
+        if (OpenConnection()) {
+            try {
+                String sql = "SELECT "
+                        + "ci.CourseID,"
+                        + "ci.PersonID,"
+                        + "c.Title, "
+                        + "c.Credits,"
+                        + "p.Lastname,"
+                        + "p.Firstname,"
+                        + "p.Hiredate ,"
+                        + "dep.Name "
+                        + "FROM courseinstructor ci "
+                        + "JOIN person p ON ci.PersonID = p.PersonID "
+                        + "JOIN course c ON ci.CourseID = c.CourseID "
+                        + "JOIN Department dep on c.DepartmentID = dep.DepartmentID "
+                        + "where ci.CourseID like '" + query + "' "
+                        + "or ci.CourseID like '" + query + "' "
+                        + "or ci.PersonID like '" + query + "' "
+                        + "or c.Title like '" + query + "' "
+                        + "or c.Credits like '" + query + "' "
+                        + "or p.Lastname like '" + query + "' "
+                        + "or p.Hiredate like '" + query + "' "
+                        + "or dep.Name like '" + query + "' ";
+
+
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(sql);
+                while (rs.next()) {
+                    CourseInstructor ci = new CourseInstructor();
+                    ci.getPerson().setPersonID(rs.getInt("PersonID"));
+                    ci.getPerson().setFirstname(rs.getString("Firstname"));
+                    ci.getPerson().setLastname(rs.getString("Lastname"));
+                    ci.getPerson().setHireDate(rs.getDate("Hiredate"));
+                    ci.getCourse().setCourseID(rs.getInt("CourseID"));
+                    ci.getCourse().setTitle(rs.getString("Title"));
+                    ci.getCourse().setCredits(rs.getInt("Credits"));
+                    ci.setDepartmentName(rs.getString("Name"));
+                    list.add(ci);
+
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(CourseInstructorDAL.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+
+                CloseConnection();
+            }
+        }
+        
+        return list;
+    }
+    
+    
     public ArrayList<CourseInstructor> getAllCourseInstructor() {
         ArrayList<CourseInstructor> list = new ArrayList<>();
 

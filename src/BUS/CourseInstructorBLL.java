@@ -94,4 +94,9 @@ public class CourseInstructorBLL {
 
         return instructorIDs;
     }
+    
+    
+    public ArrayList<CourseInstructor> searchCourseInstructor(String query) {
+        return ciDAL.searchCourseInstructor(query.trim());
+    }
 }
